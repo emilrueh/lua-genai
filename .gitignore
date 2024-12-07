@@ -1,0 +1,8 @@
+# files
+.env
+
+# dirs
+.vscode
+bin
+lib
+share
