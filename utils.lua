@@ -6,27 +6,25 @@ local https = config.https
 local json = config.json
 
 local function make_request(url, data, method, headers)
-	local response = nil
-
 	local payload = {
 		method = method,
 		headers = headers,
 		data = data,
 	}
 
-	local code, body, headers = https.request(url, payload)
+	local status_code, body, headers = https.request(url, payload)
 
-	if code ~= 200 then
-		print("Request error " .. tostring(code) .. " with " .. url)
+	if status_code ~= 200 then
+		error("Request error " .. tostring(status_code) .. " with " .. url)
 	else
-		response = body
+		return body
 	end
-
-	return response
 end
 
 local function call(user_prompt, system_prompt, model, api_key)
 	assert(user_prompt, "A user prompt must be specified.")
+
+	local endpoint = "https://api.openai.com/v1/chat/completions"
 
 	local headers = {
 		["Content-Type"] = "application/json",
@@ -42,18 +40,17 @@ local function call(user_prompt, system_prompt, model, api_key)
 		messages = messages,
 	})
 
-	local response = json.decode(make_request("https://api.openai.com/v1/chat/completions", payload, "POST", headers))
+	local response = json.decode(make_request(endpoint, payload, "POST", headers))
 
 	if response then
+		local reply = response.choices[1].message.content
 		local input_tokens = response.usage.prompt_tokens
 		local output_tokens = response.usage.completion_tokens
-		print(input_tokens, output_tokens, "\n")
 
-		local reply = response.choices[1].message.content
-		return reply -- TODO: this should be outside or not?
+		return reply, input_tokens, output_tokens
 	end
-
-	print()
 end
 
-return { call = call }
+return {
+	call = call,
+}
