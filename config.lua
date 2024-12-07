@@ -10,6 +10,8 @@ local json = require("cjson")
 
 local openai_api_key = os.getenv("OPENAI_API_KEY")
 
+assert(openai_api_key, "OpenAI API key must be provided first.")
+
 return {
 	https = https,
 	json = json,
