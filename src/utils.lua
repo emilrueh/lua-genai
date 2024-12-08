@@ -5,7 +5,7 @@ local config = require("src.config")
 local https = config.https
 local json = config.json
 
----@module "utils"
+---@module "src.utils"
 local utils = {}
 
 ---Basic https request
