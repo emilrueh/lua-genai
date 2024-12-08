@@ -1,6 +1,6 @@
 -- TODO: this file can be a class
 
-local config = require("config")
+local config = require("src.config")
 
 local https = config.https
 local json = config.json
