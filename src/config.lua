@@ -4,16 +4,12 @@ package.path = package.path .. ";./share/lua/5.4/?.lua"
 local https = require("https")
 local json = require("cjson")
 
--- local dotenv = require("lua-dotenv")
--- dotenv.load_dotenv()
--- local openai_api_key = dotenv["OPENAI_API_KEY"]
+local anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
 
-local openai_api_key = os.getenv("OPENAI_API_KEY")
-
-assert(openai_api_key, "OpenAI API key must be provided first.")
+assert(anthropic_api_key, "Anthropic API key must be provided first.")
 
 return {
 	https = https,
 	json = json,
-	openai_api_key = openai_api_key,
+	anthropic_api_key = anthropic_api_key,
 }
