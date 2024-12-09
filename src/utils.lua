@@ -24,19 +24,19 @@ function utils.make_request(url, data, method, headers)
 		data = data,
 	}
 
-	local status_code, response_body, response_headers = https.request(url, payload)
+	local status_code, body, response_headers = https.request(url, payload)
 
 	if status_code ~= 200 then
 		error("Request error " .. tostring(status_code) .. " with " .. url)
 	else
-		return response_body, response_headers
+		return body
 	end
 end
 
----OpenAI API call to v1/chat/completions endpoint
+---Anthropic API call to v1/messages endpoint
 ---@param user_prompt string
----@param system_prompt string
----@param model string
+---@param system_prompt string|nil
+---@param model string|nil
 ---@param api_key string
 ---@return string|nil reply
 ---@return integer|nil input_tokens
@@ -44,33 +44,33 @@ end
 function utils.call(user_prompt, system_prompt, model, api_key)
 	assert(user_prompt, "A user prompt must be specified.")
 
-	local endpoint = "https://api.openai.com/v1/chat/completions"
+	model = model or "claude-3-5-haiku-20241022"
+
+	local endpoint = "https://api.anthropic.com/v1/messages"
 
 	local headers = {
-		["Content-Type"] = "application/json",
-		["Authorization"] = "Bearer " .. api_key,
+		["x-api-key"] = api_key,
+		["anthropic-version"] = "2023-06-01", -- https://docs.anthropic.com/en/api/versioning
+		["content-type"] = "application/json",
 	}
 
 	local messages = {}
-	-- first system_prompt
-	if system_prompt then
-		table.insert(messages, { role = "system", content = system_prompt })
-	end
-	-- then user_prompt
 	table.insert(messages, { role = "user", content = user_prompt })
 
 	local payload = json.encode({
 		model = model,
+		system = system_prompt,
 		messages = messages,
+		max_tokens = 1024,
 	})
 
 	local response = utils.make_request(endpoint, payload, "POST", headers)
 	local response_decoded = json.decode(response)
 
-	if response then
-		local reply = response_decoded.choices[1].message.content
-		local input_tokens = response_decoded.usage.prompt_tokens
-		local output_tokens = response_decoded.usage.completion_tokens
+	if response_decoded then
+		local reply = response_decoded.content[1].text
+		local input_tokens = response_decoded.usage.input_tokens
+		local output_tokens = response_decoded.usage.output_tokens
 
 		return reply, input_tokens, output_tokens
 	end
