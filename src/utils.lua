@@ -23,11 +23,9 @@ function utils.make_request(url, data, method, headers)
 
 	local status_code, body, response_headers = https.request(url, payload)
 
-	if status_code ~= 200 then
-		error("Request error " .. tostring(status_code) .. " with " .. url)
-	else
-		return body
-	end
+	assert(status_code == 200 and response_headers, body)
+
+	return body
 end
 
 ---creates a shallow copy of a list like table

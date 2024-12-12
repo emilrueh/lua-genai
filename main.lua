@@ -11,6 +11,7 @@ local anthropic = require("src.ai.anthropic")
 
 local api_keys = config.api_keys
 
+---@param model string
 local function conversation(model)
 	local system_prompt = "Respond extremely briefly and concise."
 
