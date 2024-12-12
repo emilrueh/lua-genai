@@ -9,11 +9,10 @@ end
 local config = require("src.config")
 local anthropic = require("src.ai.anthropic")
 
-local anthropic_api_key = config.anthropic_api_key
+local api_keys = config.api_keys
 
-local function conversation()
-	local model = "claude-3-5-haiku-20241022"
-
+---@param model string
+local function conversation(model)
 	local system_prompt = "Respond extremely briefly and concise."
 
 	local messages = {}
@@ -21,7 +20,6 @@ local function conversation()
 
 	while true do
 		local user_prompt = io.read()
-		-- local user_prompt = "Hello, who are you?"
 		print()
 
 		if user_prompt == ":q" then
@@ -31,7 +29,7 @@ local function conversation()
 		table.insert(messages, { role = "user", content = user_prompt })
 
 		-- api call
-		local reply, input_tokens, output_tokens = anthropic.call(messages, model, anthropic_api_key)
+		local reply, input_tokens, output_tokens = anthropic.call(messages, model, api_keys.anthropic_api_key)
 
 		table.insert(messages, { role = "assistant", content = reply })
 
@@ -41,7 +39,7 @@ local function conversation()
 end
 
 local function main()
-	conversation()
+	conversation("claude-3-5-haiku-20241022")
 end
 
 main()

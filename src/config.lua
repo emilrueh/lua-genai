@@ -4,12 +4,15 @@ package.path = package.path .. ";./share/lua/5.4/?.lua"
 local https = require("https")
 local json = require("cjson")
 
-local anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
-
-assert(anthropic_api_key, "Anthropic API key must be provided first.")
+local api_keys = {
+	anthropic_api_key = os.getenv("ANTHROPIC_API_KEY"),
+	openai_api_key = os.getenv("OPENAI_API_KEY"),
+	groq_api_key = os.getenv("GROQ_API_KEY"),
+	gemini_api_key = os.getenv("GEMINI_API_KEY"),
+}
 
 return {
 	https = https,
 	json = json,
-	anthropic_api_key = anthropic_api_key,
+	api_keys = api_keys,
 }
