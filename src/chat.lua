@@ -11,7 +11,6 @@ function Chat.new(ai, model, system_prompt)
 
 	self._ai = ai
 	self.history = {}
-
 	self.system_prompt = system_prompt
 
 	self.model = model
@@ -32,9 +31,7 @@ end
 function Chat:say(user_prompt)
 	local user_message = self._ai.provider.construct_user_message(user_prompt)
 	table.insert(self.history, user_message)
-
 	local reply = self._ai:call(self)
-
 	table.insert(self.history, self._ai.provider.construct_assistant_message(reply))
 
 	return reply
