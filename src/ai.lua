@@ -3,7 +3,7 @@ local utils = require("src.utils")
 
 local providers = require("src.providers._load")
 
-local json = config.json
+local cjson = config.cjson
 
 ---AI API client for interacting with specified endpoint
 ---@class AI
@@ -45,8 +45,8 @@ end
 ---@return string reply
 function AI:call(opts)
 	local headers = self.provider.construct_headers(self._api_key)
-	local payload = json.encode(self.provider.construct_payload(opts))
-	local response = json.decode(utils.send_request(self._endpoint, payload, "POST", headers))
+	local payload = cjson.encode(self.provider.construct_payload(opts))
+	local response = cjson.decode(utils.send_request(self._endpoint, payload, "POST", headers))
 	local reply, input_tokens, output_tokens = self.provider.extract_response_data(response)
 
 	return reply
