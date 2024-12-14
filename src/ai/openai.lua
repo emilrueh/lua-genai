@@ -3,22 +3,34 @@ local utils = require("src.utils")
 
 local json = config.json
 
----@module "src.ai.openai"
-local openai = {}
+-- https://www.youtube.com/watch?v=g1iKA3lSFms
 
----OpenAI API call to v1/chat/completions endpoint
+--- OpenAI API client for interacting with specified endpoint
+---@class OpenAI
+---@field api_key string
+---@field endpoint string
+local OpenAI = {}
+OpenAI.__index = OpenAI
+
+function OpenAI.new(api_key, endpoint)
+	local self = setmetatable({}, OpenAI)
+
+	self.api_key = api_key
+	self.endpoint = endpoint
+
+	return self
+end
+
+--- OpenAI API call to specified model
 ---@param messages table
 ---@param model string
----@param api_key string
 ---@return string|nil reply
 ---@return integer|nil input_tokens
 ---@return integer|nil output_tokens
-function openai.call(messages, model, api_key)
-	local endpoint = "https://api.openai.com/v1/chat/completions"
-
+function OpenAI:call(messages, model)
 	local headers = {
 		["Content-Type"] = "application/json",
-		["Authorization"] = "Bearer " .. api_key,
+		["Authorization"] = "Bearer " .. self.api_key,
 	}
 
 	local payload = json.encode({
@@ -26,16 +38,15 @@ function openai.call(messages, model, api_key)
 		messages = messages,
 	})
 
-	local response = utils.make_request(endpoint, payload, "POST", headers)
-	local response_decoded = json.decode(response)
+	local response = json.decode(utils.make_request(self.endpoint, payload, "POST", headers))
 
 	if response then
-		local reply = response_decoded.choices[1].message.content
-		local input_tokens = response_decoded.usage.prompt_tokens
-		local output_tokens = response_decoded.usage.completion_tokens
+		local reply = response.choices[1].message.content
+		local input_tokens = response.usage.prompt_tokens
+		local output_tokens = response.usage.completion_tokens
 
 		return reply, input_tokens, output_tokens
 	end
 end
 
-return openai
+return OpenAI
