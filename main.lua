@@ -1,11 +1,3 @@
---
-
-if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
-	require("lldebugger").start()
-end
-
---
-
 local config = require("src.config")
 local AI = require("src.ai")
 local Chat = require("src.chat")

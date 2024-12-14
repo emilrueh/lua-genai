@@ -1,3 +1,7 @@
+if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
+	require("lldebugger").start()
+end
+
 package.cpath = package.cpath .. ";./lib/lua/5.4/?.so"
 package.path = package.path .. ";./share/lua/5.4/?.lua"
 
