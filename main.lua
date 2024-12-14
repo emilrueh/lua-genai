@@ -7,9 +7,11 @@ end
 --
 
 local config = require("src.config")
-local anthropic = require("src.ai.anthropic")
+local OpenAI = require("src.ai.openai")
 
 local api_keys = config.api_keys
+
+local client = OpenAI.new(api_keys.openai_api_key, "https://api.openai.com/v1/chat/completions")
 
 ---@param model string
 local function conversation(model)
@@ -29,7 +31,7 @@ local function conversation(model)
 		table.insert(messages, { role = "user", content = user_prompt })
 
 		-- api call
-		local reply, input_tokens, output_tokens = anthropic.call(messages, model, api_keys.anthropic_api_key)
+		local reply, input_tokens, output_tokens = client:call(messages, model)
 
 		table.insert(messages, { role = "assistant", content = reply })
 
@@ -39,7 +41,7 @@ local function conversation(model)
 end
 
 local function main()
-	conversation("claude-3-5-haiku-20241022")
+	conversation("gpt-4o-mini")
 end
 
 main()
