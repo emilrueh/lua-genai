@@ -29,7 +29,7 @@ end
 
 ---Check endpoint for occurance of ai provider name
 ---@param providers table
----@return table|nil
+---@return table|nil provider_module
 function AI:_determine_provider(providers)
 	for provider_name, provider_module in pairs(providers) do
 		if self._endpoint:find(provider_name) then
