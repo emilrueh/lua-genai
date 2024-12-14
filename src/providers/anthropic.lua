@@ -5,26 +5,30 @@ local utils = require("src.utils")
 ---@module "src.ai.anthropic"
 local anthropic = {}
 
----Extract system prompt from messages
----@param messages table
----@return string|nil system_prompt
-local function _extract_and_confirm_messages(messages)
-	local system_prompt = nil
-
-	local copy = utils.shallow_copy_table(messages)
-
-	for i, message in ipairs(copy) do
-		-- extract system prompt and remove from messages
-		if message.role == "system" then
-			system_prompt = message.content
-			table.remove(messages, i)
-		end
-	end
-
-	return system_prompt
+---Return nil as system prompt is provided in top-level payload
+---@param system_prompt string
+---@return nil
+function anthropic.construct_system_message(system_prompt)
+	return nil
 end
 
----Constructing the request headers
+---Package user prompt
+---@param user_prompt string
+---@return table
+function anthropic.construct_user_message(user_prompt)
+	local user_message = { role = "user", content = user_prompt }
+	return user_message
+end
+
+---Package AI reply
+---@param reply string
+---@return table
+function anthropic.construct_assistant_message(reply)
+	local assistant_message = { role = "assistant", content = reply }
+	return assistant_message
+end
+
+---Construct the request headers
 ---@param api_key string
 ---@return table headers
 function anthropic.construct_headers(api_key)
@@ -37,12 +41,14 @@ function anthropic.construct_headers(api_key)
 	return headers
 end
 
+---Packaging AI settings
+---@param opts table
+---@return table
 function anthropic.construct_payload(opts)
+	local messages = opts.history
+	local system_prompt = opts.system_prompt
 	local model = opts.model
-	local messages = opts.messages
 	local max_tokens = opts.max_tokens
-
-	local system_prompt = _extract_and_confirm_messages(messages)
 
 	local payload = {
 		model = model,
