@@ -12,7 +12,7 @@ local utils = {}
 ---@param headers table|nil
 ---@return string|nil response_body
 ---@return table|nil response_headers
-function utils.make_request(url, data, method, headers)
+function utils.send_request(url, data, method, headers)
 	assert(url, "A url to request must be specified.")
 
 	local payload = {

@@ -47,7 +47,7 @@ end
 function AI:call(opts)
 	local headers = self._provider.construct_headers(self._api_key)
 	local payload = json.encode(self._provider.construct_payload(opts))
-	local response = json.decode(utils.make_request(self._endpoint, payload, "POST", headers))
+	local response = json.decode(utils.send_request(self._endpoint, payload, "POST", headers))
 	return self._provider.extract_response_data(response)
 end
 
