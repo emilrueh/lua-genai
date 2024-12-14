@@ -1,6 +1,6 @@
 # Lua Wrapper for Generative AI APIs
 
-A developer-friendly Lua interface for working with multiple generative AI providers. This library abstracts away provider-specific payload structures and response parsing, allowing you to switch between models from OpenAI or Anthropic without rewriting your code.
+A developer-friendly Lua interface for working with multiple generative AI providers, abstracting away provider-specific payload structures and response parsing so you can easily switch between OpenAI or Anthropic models without rewriting your code.
 
 ## Providers Implemented
 
@@ -41,9 +41,9 @@ See `main.lua` for a more detailed example.
 
 ## Planned Features
 
-- Error handling
-- Toke cost tracking
-- Gemini and open-source model integration
+1. Error handling
+2. Token cost tracking
+3. Gemini and open-source model integration
 
 ## Dependencies
 
