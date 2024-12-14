@@ -40,6 +40,7 @@ end
 function anthropic.construct_payload(opts)
 	local model = opts.model
 	local messages = opts.messages
+	local max_tokens = opts.max_tokens
 
 	local system_prompt = _extract_and_confirm_messages(messages)
 
@@ -47,7 +48,7 @@ function anthropic.construct_payload(opts)
 		model = model,
 		system = system_prompt,
 		messages = messages,
-		max_tokens = 1024, -- required
+		max_tokens = max_tokens or 1024, -- required
 	}
 
 	return payload
