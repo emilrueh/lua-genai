@@ -4,9 +4,9 @@ A developer-friendly Lua interface for working with multiple generative AI provi
 
 ## Providers
 
-[OpenAI](https://platform.openai.com/docs/overview)
+- [OpenAI](https://platform.openai.com/docs/overview)
 
-[Anthropic](https://docs.anthropic.com/en/home)
+- [Anthropic](https://docs.anthropic.com/en/home)
 
 ## Features
 
