@@ -1,6 +1,6 @@
 # Unified Lua Interface for Generative AI
 
-A developer-friendly Lua interface for working with multiple generative AI providers, abstracting away provider-specific payload structures and response parsing so you can easily switch between OpenAI or Anthropic models without rewriting your code.
+A developer-friendly Lua interface for working with multiple generative AI providers, abstracting away provider-specific payload structures and response parsing so you can easily switch between various models and providers without rewriting any code.
 
 ## Providers
 
