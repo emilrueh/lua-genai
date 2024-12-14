@@ -12,7 +12,7 @@ local utils = {}
 ---@param headers table|nil
 ---@return string|nil response_body
 ---@return table|nil response_headers
-function utils.make_request(url, data, method, headers)
+function utils.send_request(url, data, method, headers)
 	assert(url, "A url to request must be specified.")
 
 	local payload = {
@@ -26,17 +26,6 @@ function utils.make_request(url, data, method, headers)
 	assert(status_code == 200 and response_headers, body)
 
 	return body
-end
-
----creates a shallow copy of a list like table
----@param t table
----@return table
-function utils.shallow_copy_table(t)
-	local copy = {}
-	for k, v in pairs(t) do
-		copy[k] = v
-	end
-	return copy
 end
 
 return utils
