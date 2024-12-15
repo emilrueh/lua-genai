@@ -32,6 +32,14 @@ function openai.construct_assistant_message(reply)
 	return assistant_message
 end
 
+function openai.init_settings(settings)
+	settings = {
+		stream = settings.stream or false,
+	}
+
+	return settings
+end
+
 ---Construct the request headers
 ---@param api_key string
 ---@return table headers
@@ -48,12 +56,11 @@ end
 ---@param opts table
 ---@return table
 function openai.construct_payload(opts)
-	local model = opts.model
-	local messages = opts.history
-
 	local payload = {
-		model = model,
-		messages = messages,
+		model = opts.model,
+		messages = opts.history,
+
+		stream = opts.settings.stream,
 	}
 
 	return payload
