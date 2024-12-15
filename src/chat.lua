@@ -28,18 +28,12 @@ end
 
 ---Wrap message construction
 ---@param user_prompt string
----@return string|nil reply
+---@return string reply Full response text whether streamed or not
 function Chat:say(user_prompt)
-	local user_message = self._ai.provider.construct_user_message(user_prompt)
-	table.insert(self.history, user_message)
+	table.insert(self.history, self._ai.provider.construct_user_message(user_prompt))
 	local reply = self._ai:call(self)
 	table.insert(self.history, self._ai.provider.construct_assistant_message(reply))
-
-	if self.settings.stream then
-		return nil
-	else
-		return reply
-	end
+	return reply
 end
 
 return Chat
