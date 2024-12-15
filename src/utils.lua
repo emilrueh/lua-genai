@@ -7,6 +7,14 @@ local ltn12 = config.ltn12
 ---@module "src.utils"
 local utils = {}
 
+---Https request with partial response functionality via callback
+---@param url string
+---@param payload table|nil
+---@param method string|nil
+---@param headers table|nil
+---@param callback function|nil
+---@return string body
+---@return table response_headers
 function utils.send_request(url, payload, method, headers, callback)
 	local response_body = {}
 	local final_sink = ltn12.sink.table(response_body)
@@ -38,6 +46,8 @@ function utils.send_request(url, payload, method, headers, callback)
 	return body, response_headers
 end
 
+---Building generic accumulator schema to be filled with chunk data
+---@return table
 function utils.init_accumulator()
 	return {
 		text = {},
@@ -46,11 +56,18 @@ function utils.init_accumulator()
 	}
 end
 
+---@type table
 utils.accumulator = utils.init_accumulator()
 
+---Generic parsing of SSE via callback
+---@param pattern string
+---@param handler function
+---@return function chunk_callback
 function utils.create_sse_callback(pattern, handler)
 	local buffer = ""
 
+	---Callback to parse chunks from SSE
+	---@param chunk string
 	local function chunk_callback(chunk)
 		if not chunk then
 			return
@@ -64,7 +81,7 @@ function utils.create_sse_callback(pattern, handler)
 			end
 
 			local line = buffer:sub(1, newline_pos - 1)
-			buffer = buffer:sub(newline_pos + 1)
+			buffer = buffer:sub(newline_pos + 1) -- test, this should be cursive
 
 			local json_str = line:match(pattern)
 			if json_str then
