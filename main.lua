@@ -36,7 +36,7 @@ local function main()
 
 		local reply = chat:say(user_prompt)
 
-		if reply then
+		if not chat.settings.stream then
 			print(reply)
 		else
 			print()
