@@ -1,31 +1,81 @@
 local config = require("src.config")
 
+local cjson = config.cjson
 local https = config.https
+local ltn12 = config.ltn12
 
 ---@module "src.utils"
 local utils = {}
 
----Basic https request
----@param url string
----@param data string|nil
----@param method string|nil
----@param headers table|nil
----@return string|nil response_body
----@return table|nil response_headers
-function utils.send_request(url, data, method, headers)
-	assert(url, "A url to request must be specified.")
+function utils.send_request(url, payload, method, headers, callback)
+	local response_body = {}
+	local final_sink = ltn12.sink.table(response_body)
 
-	local payload = {
+	local function stream_filter(chunk)
+		if chunk and callback then
+			callback(chunk)
+		end
+		return chunk
+	end
+
+	local sink = callback and ltn12.sink.chain(stream_filter, final_sink) or final_sink
+
+	if payload then
+		headers["Content-Length"] = #payload
+	end
+
+	local _, status_code, response_headers = https.request({
+		url = url,
 		method = method,
 		headers = headers,
-		data = data,
+		sink = sink,
+		source = payload and ltn12.source.string(payload) or nil,
+	})
+
+	local body = table.concat(response_body)
+	assert(status_code == 200, body)
+
+	return body, response_headers
+end
+
+function utils.init_accumulator()
+	return {
+		text = {},
+		input_tokens = 0,
+		output_tokens = 0,
 	}
+end
 
-	local status_code, body, response_headers = https.request(url, payload)
+utils.accumulator = utils.init_accumulator()
 
-	assert(status_code == 200 and response_headers, body)
+function utils.create_sse_callback(pattern, handler)
+	local buffer = ""
 
-	return body
+	local function chunk_callback(chunk)
+		if not chunk then
+			return
+		end
+		buffer = buffer .. chunk
+
+		while true do
+			local newline_pos = buffer:find("\n")
+			if not newline_pos then
+				break
+			end
+
+			local line = buffer:sub(1, newline_pos - 1)
+			buffer = buffer:sub(newline_pos + 1)
+
+			local json_str = line:match(pattern)
+			if json_str then
+				local ok, obj = pcall(cjson.decode, json_str)
+				if ok and obj then
+					handler(obj, utils.accumulator)
+				end
+			end
+		end
+	end
+	return chunk_callback
 end
 
 return utils
