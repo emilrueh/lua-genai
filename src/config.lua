@@ -5,8 +5,10 @@ end
 package.cpath = package.cpath .. ";./lib/lua/5.4/?.so"
 package.path = package.path .. ";./share/lua/5.4/?.lua"
 
-local https = require("https")
+-- local https = require("https")
 local cjson = require("cjson")
+local https = require("ssl.https")
+local ltn12 = require("ltn12")
 
 local api_keys = {
 	anthropic_api_key = os.getenv("ANTHROPIC_API_KEY"),
@@ -16,7 +18,8 @@ local api_keys = {
 }
 
 return {
-	https = https,
 	cjson = cjson,
+	https = https,
+	ltn12 = ltn12,
 	api_keys = api_keys,
 }
