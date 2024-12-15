@@ -47,7 +47,7 @@ function utils.send_request(url, payload, method, headers, callback)
 end
 
 ---Building generic accumulator schema to be filled with chunk data
----@return table
+---@return table schema { text = {}, input_tokens = 0, output_tokens = 0 }
 function utils.init_accumulator()
 	return {
 		text = {},
@@ -56,12 +56,12 @@ function utils.init_accumulator()
 	}
 end
 
----@type table
+---@type table Schema to collect chunked data
 utils.accumulator = utils.init_accumulator()
 
 ---Generic parsing of SSE via callback
----@param pattern string
----@param handler function
+---@param pattern string Lua matching pattern for provider specific chunk structure
+---@param handler function Provider specific parsing and processing logic
 ---@return function chunk_callback
 function utils.create_sse_callback(pattern, handler)
 	local buffer = ""
