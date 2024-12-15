@@ -3,10 +3,11 @@
 ---@field history table
 ---@field system_prompt string|nil
 ---@field model string
+---@field settings table
 local Chat = {}
 Chat.__index = Chat
 
-function Chat.new(ai, model, system_prompt)
+function Chat.new(ai, model, system_prompt, settings)
 	local self = setmetatable({}, Chat)
 
 	self._ai = ai
@@ -14,11 +15,11 @@ function Chat.new(ai, model, system_prompt)
 	self.system_prompt = system_prompt
 
 	self.model = model
-	-- all other ai params go here (probs should get loaded depending on provider)
+	self.settings = self._ai.provider.init_settings(settings or {})
 
 	-- insert system prompt into chat history at the start if provided
 	local system_message = self._ai.provider.construct_system_message(self.system_prompt)
-	if system_message then
+	if system_message then -- some providers use system message as top-level arg
 		table.insert(self.history, system_message)
 	end
 
@@ -27,14 +28,18 @@ end
 
 ---Wrap message construction
 ---@param user_prompt string
----@return string reply
+---@return string|nil reply
 function Chat:say(user_prompt)
 	local user_message = self._ai.provider.construct_user_message(user_prompt)
 	table.insert(self.history, user_message)
 	local reply = self._ai:call(self)
 	table.insert(self.history, self._ai.provider.construct_assistant_message(reply))
 
-	return reply
+	if self.settings.stream then
+		return nil
+	else
+		return reply
+	end
 end
 
 return Chat
