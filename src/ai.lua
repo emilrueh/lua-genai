@@ -32,9 +32,7 @@ end
 ---@return table|nil provider_module
 function AI:_determine_provider(providers)
 	for provider_name, provider_module in pairs(providers) do
-		if self._endpoint:find(provider_name) then
-			return provider_module
-		end
+		if self._endpoint:find(provider_name) then return provider_module end
 	end
 
 	return nil -- default if no provider found
@@ -52,9 +50,7 @@ function AI:call(opts)
 	-- - perhaps it should be set within the AI client?
 
 	local callback = nil
-	if opts.settings.stream then
-		callback = self.provider.callback
-	end
+	if opts.settings.stream then callback = self.provider.callback end
 
 	local response = utils.send_request(self._endpoint, payload, "POST", headers, callback)
 

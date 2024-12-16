@@ -8,11 +8,7 @@ local openai = {}
 ---@return table|nil
 function openai.construct_system_message(system_prompt)
 	local system_message = nil
-
-	if system_prompt then
-		system_message = { role = "system", content = system_prompt }
-	end
-
+	if system_prompt then system_message = { role = "system", content = system_prompt } end
 	return system_message
 end
 

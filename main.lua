@@ -29,21 +29,16 @@ local function main()
 		local user_prompt = io.read()
 		print()
 		-- local user_prompt = "Hello, tell me your name and who built you! My name is Emil. I was built by mother earth."
+		if user_prompt == ":q" then break end
 
-		if user_prompt == ":q" then
-			break
-		end
-
-		local reply = chat:say(user_prompt)
+		local reply = chat:say(user_prompt) -- API call
 
 		if not chat.settings.stream then
 			print(reply)
 		else
 			print()
 		end
-
 		print()
-
 		-- break
 	end
 end
