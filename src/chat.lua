@@ -3,10 +3,14 @@
 ---@field history table
 ---@field system_prompt string|nil
 ---@field model string
----@field settings table
+---@field settings table|nil
 local Chat = {}
 Chat.__index = Chat
 
+---@param ai table
+---@param model string
+---@param system_prompt string|nil
+---@param settings table|nil
 function Chat.new(ai, model, system_prompt, settings)
 	local self = setmetatable({}, Chat)
 
