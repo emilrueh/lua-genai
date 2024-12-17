@@ -24,42 +24,43 @@ function utils.send_request(url, payload, method, headers, callback)
 		return chunk
 	end
 
-	local sink = callback and ltn12.sink.chain(stream_filter, final_sink) or final_sink
-
 	-- if payload then headers["Content-Length"] = #payload end
 
-	local _, status_code, response_headers = https.request({
+	local request_opts = {
 		url = url,
 		method = method,
 		headers = headers,
-		sink = sink,
+		sink = callback and ltn12.sink.chain(stream_filter, final_sink) or final_sink,
 		source = payload and ltn12.source.string(payload) or nil,
-	})
+	}
+
+	local _, status_code, response_headers = https.request(request_opts)
 
 	local body = table.concat(response_body)
 	assert(status_code == 200, body)
-
 	return body, response_headers
 end
 
----Building generic accumulator schema to be filled with chunk data
----@return table schema { text = {}, input_tokens = 0, output_tokens = 0 }
-function utils.init_accumulator()
-	return {
-		text = {},
-		input_tokens = 0,
-		output_tokens = 0,
-	}
+---Storage for full stream response
+---@class Accumulator
+---@field schema table Provider specific non-streamed response matching schema
+local Accumulator = {}
+Accumulator.__index = Accumulator
+---@param schema string Encoded provider specific schema table
+function Accumulator.new(schema)
+	local self = setmetatable({}, Accumulator)
+	self.schema = cjson.decode(schema)
+	return self
 end
 
----@type table Schema to collect chunked data
-utils.accumulator = utils.init_accumulator()
+utils.Accumulator = Accumulator
 
 ---Generic parsing of SSE via callback
----@param pattern string Lua matching pattern for provider specific chunk structure
----@param handler function Provider specific parsing and processing logic
+---@param opts table
 ---@return function chunk_callback
-function utils.create_sse_callback(pattern, handler)
+function utils.create_sse_callback(opts)
+	local pattern, handler, accumulator = table.unpack(opts)
+
 	local buffer = ""
 
 	---Callback to parse chunks from SSE
@@ -78,7 +79,7 @@ function utils.create_sse_callback(pattern, handler)
 			local json_str = line:match(pattern)
 			if json_str then
 				local ok, obj = pcall(cjson.decode, json_str)
-				if ok and obj then handler(obj, utils.accumulator) end
+				if ok and obj then handler(obj, accumulator) end
 			end
 		end
 	end
