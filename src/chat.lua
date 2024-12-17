@@ -11,11 +11,10 @@ function Chat.new(ai, model, system_prompt, settings)
 	local self = setmetatable({}, Chat)
 
 	self._ai = ai
-	self.history = {}
-	self.system_prompt = system_prompt
-
 	self.model = model
 	self.settings = self._ai.provider.init_settings(settings or {})
+	self.history = {}
+	self.system_prompt = system_prompt
 
 	-- insert system prompt into chat history at the start if provided
 	local system_message = self._ai.provider.construct_system_message(self.system_prompt)
