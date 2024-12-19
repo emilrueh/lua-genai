@@ -9,16 +9,19 @@ local utils = {}
 
 ---Https request with partial response functionality via callback
 ---@param url string
----@param payload table|nil
----@param method string|nil
----@param headers table|nil
----@param callback function|nil
+---@param payload table?
+---@param method string?
+---@param headers table?
+---@param callback function?
 ---@return string body
 ---@return table response_headers
 function utils.send_request(url, payload, method, headers, callback)
 	local response_body = {}
 	local final_sink = ltn12.sink.table(response_body)
 
+	---Trigger streamed response parsing
+	---@param chunk string
+	---@return string chunk
 	local function stream_filter(chunk)
 		if chunk and callback then callback(chunk) end
 		return chunk
@@ -46,6 +49,7 @@ end
 ---@field schema table Provider specific non-streamed response matching schema
 local Accumulator = {}
 Accumulator.__index = Accumulator
+
 ---@param schema string Encoded provider specific schema table
 function Accumulator.new(schema)
 	local self = setmetatable({}, Accumulator)

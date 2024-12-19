@@ -1,16 +1,16 @@
 ---@class Chat
 ---@field _ai table
 ---@field history table
----@field system_prompt string|nil
+---@field system_prompt string?
 ---@field model string
----@field settings table|nil
+---@field settings table?
 local Chat = {}
 Chat.__index = Chat
 
 ---@param ai table
 ---@param model string
----@param system_prompt string|nil
----@param settings table|nil
+---@param system_prompt string?
+---@param settings table?
 function Chat.new(ai, model, system_prompt, settings)
 	local self = setmetatable({}, Chat)
 

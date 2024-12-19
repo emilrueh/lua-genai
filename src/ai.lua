@@ -5,14 +5,14 @@ local cjson = config.cjson
 
 ---Client for interacting with specified API endpoint
 ---@class AI
----@field _api_key string
+---@field _api_key string?
 ---@field _endpoint string
 ---@field provider table|nil
 ---@field _determine_provider function
 local AI = {}
 AI.__index = AI
 
----@param api_key string
+---@param api_key? string
 ---@param endpoint string
 function AI.new(api_key, endpoint)
 	local self = setmetatable({}, AI)
@@ -24,7 +24,7 @@ end
 
 ---Check endpoint for occurance of ai provider name
 ---@param providers table Collection of AI provider modules
----@return table|nil provider_module Collection of functions determining input and output structure
+---@return table? provider_module Collection of functions determining input and output structure
 function AI:_determine_provider(providers)
 	local provider = nil
 	for provider_name, provider_module in pairs(providers) do
@@ -36,8 +36,8 @@ end
 
 ---Prepare streaming requirements if set to stream
 ---@param payload table
----@return table|nil accumulator Schema storing full streamed response
----@return function|nil callback Streaming handler
+---@return table? accumulator Schema storing full streamed response
+---@return function? callback Streaming handler
 function AI:_setup_stream(payload)
 	local accumulator = nil
 	local callback = nil
@@ -53,8 +53,8 @@ end
 ---@param opts table Payload including model settings and chat history
 ---@return table headers
 ---@return table payload
----@return function|nil callback Streaming handler
----@return table|nil accumulator Schema storing full streamed response
+---@return function? callback Streaming handler
+---@return table? accumulator Schema storing full streamed response
 function AI:_prepare_response_requirements(opts)
 	local headers = self.provider.construct_headers(self._api_key)
 	local payload = self.provider.construct_payload(opts)

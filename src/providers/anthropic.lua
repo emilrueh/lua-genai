@@ -38,7 +38,7 @@ function anthropic.init_settings(settings)
 end
 
 ---Construct the request headers
----@param api_key string
+---@param api_key string?
 ---@return table headers
 function anthropic.construct_headers(api_key)
 	local headers = {
