@@ -95,16 +95,24 @@ anthropic.response_schema = {
 ---Parse and process Anthropic specific chunked responses structure
 ---@param obj table JSON from string chunk
 function anthropic.handle_stream_data(obj, accumulator)
-	-- TODO: extract input and output tokens
+	-- text:
 	if obj.type == "content_block_delta" and obj.delta and obj.delta.text then
 		local text = obj.delta.text
-
 		-- print chunked response text onto the same line
 		io.write(text)
 		io.flush()
-
 		-- accumulate response text
 		accumulator.schema.content[1].text = accumulator.schema.content[1].text .. text
+
+	-- input_tokens:
+	elseif obj.type == "message_start" and obj.message and obj.message.usage and obj.message.usage.input_tokens then
+		local input_tokens = obj.message.usage.input_tokens
+		accumulator.schema.usage.input_tokens = accumulator.schema.usage.input_tokens + input_tokens
+
+	-- output_tokens:
+	elseif obj.type == "message_delta" and obj.usage and obj.usage.output_tokens then
+		local output_tokens = obj.usage.output_tokens
+		accumulator.schema.usage.output_tokens = accumulator.schema.usage.output_tokens + output_tokens
 	end
 end
 
