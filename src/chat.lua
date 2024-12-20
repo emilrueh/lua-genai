@@ -19,7 +19,7 @@ function Chat.new(ai, model, system_prompt, settings)
 
 	self._ai = ai
 	self.model = model
-	self.settings = self._ai.provider.init_settings(settings or {})
+	self.settings = settings or {}
 	self.usage = { input = 0, output = 0 }
 	self.history = {}
 	self.system_prompt = system_prompt
