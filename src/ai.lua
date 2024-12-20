@@ -43,7 +43,7 @@ function AI:_setup_stream(payload)
 	local callback = nil
 	if payload.stream then
 		accumulator = utils.Accumulator.new(cjson.encode(self.provider.response_schema))
-		local callback_opts = { self.provider.match_pattern, self.provider.handle_stream_data, accumulator }
+		local callback_opts = { self.provider.stream_pattern, self.provider.handle_stream_data, accumulator }
 		callback = payload.stream and utils.create_sse_callback(callback_opts)
 	end
 	return accumulator, callback
