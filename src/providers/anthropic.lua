@@ -75,7 +75,7 @@ function anthropic.extract_response_data(response)
 	return reply, input_tokens, output_tokens
 end
 
----Parse and process Anthropic specific chunked responses structure for text and token usage
+---Parse and process provider specific chunked responses structure for text and token usage
 ---@param obj table JSON from string chunk
 function anthropic.handle_stream_data(obj, accumulator)
 	-- text:
