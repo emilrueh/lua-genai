@@ -78,21 +78,7 @@ function anthropic.extract_response_data(response)
 	return reply, input_tokens, output_tokens
 end
 
--- STREAMING:
-
----@type string
-anthropic.match_pattern = "^data:%s*(.*)"
-
----@type table
-anthropic.response_schema = {
-	content = { { text = "" } },
-	usage = {
-		input_tokens = 0,
-		output_tokens = 0,
-	},
-}
-
----Parse and process Anthropic specific chunked responses structure
+---Parse and process Anthropic specific chunked responses structure for text and token usage
 ---@param obj table JSON from string chunk
 function anthropic.handle_stream_data(obj, accumulator)
 	-- text:
@@ -115,5 +101,32 @@ function anthropic.handle_stream_data(obj, accumulator)
 		accumulator.schema.usage.output_tokens = accumulator.schema.usage.output_tokens + output_tokens
 	end
 end
+
+---Lua pattern match for provider specific stream chunk data json
+---@type string
+anthropic.stream_pattern = "^data:%s*(.*)"
+
+---Data structure to accumulate stream for centralized parsing
+---@type table
+anthropic.response_schema = {
+	content = { { text = "" } },
+	usage = {
+		input_tokens = 0,
+		output_tokens = 0,
+	},
+}
+
+---All model input and output pricing per million tokens
+---@type table
+anthropic.pricing = {
+	["claude-3-5-haiku-20241022"] = {
+		input = 1,
+		output = 5,
+	},
+	["claude-3-5-sonnet-20241022"] = {
+		input = 3,
+		output = 15,
+	},
+}
 
 return anthropic
