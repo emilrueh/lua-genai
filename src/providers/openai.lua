@@ -28,23 +28,14 @@ function openai.construct_assistant_message(reply)
 	return assistant_message
 end
 
-function openai.init_settings(settings)
-	settings = {
-		stream = settings.stream or false,
-	}
-
-	return settings
-end
-
 ---Construct the request headers
----@param api_key string
+---@param api_key string?
 ---@return table headers
 function openai.construct_headers(api_key)
 	local headers = {
 		["Content-Type"] = "application/json",
 		["Authorization"] = "Bearer " .. api_key,
 	}
-
 	return headers
 end
 
@@ -52,11 +43,14 @@ end
 ---@param opts table
 ---@return table
 function openai.construct_payload(opts)
+	local do_stream = opts.settings.stream
+
 	local payload = {
 		model = opts.model,
 		messages = opts.history,
-
-		stream = opts.settings.stream,
+		-- basic settings:
+		stream = do_stream,
+		stream_options = do_stream and { include_usage = true } or nil,
 	}
 
 	return payload
@@ -71,8 +65,74 @@ function openai.extract_response_data(response)
 	local reply = response.choices[1].message.content
 	local input_tokens = response.usage.prompt_tokens
 	local output_tokens = response.usage.completion_tokens
-
 	return reply, input_tokens, output_tokens
 end
+
+---Parse and process provider specific chunked responses structure for text and token usage
+---@param obj table JSON from string chunk
+function openai.handle_stream_data(obj, accumulator)
+	-- text:
+	if
+		obj.object == "chat.completion.chunk"
+		and obj.choices
+		and #obj.choices > 0
+		and obj.choices[1].delta
+		and obj.choices[1].delta.content
+	then
+		local text = obj.choices[1].delta.content
+		-- print chunked response text onto the same line
+		io.write(text)
+		io.flush()
+		-- accumulate response text
+		accumulator.schema.choices[1].message.content = accumulator.schema.choices[1].message.content .. text
+
+	-- input_tokens:
+	elseif
+		obj.object == "chat.completion.chunk"
+		and obj.usage
+		and type(obj.usage) == "table"
+		and obj.usage.prompt_tokens
+	then
+		local input_tokens = obj.usage.prompt_tokens
+		accumulator.schema.usage.prompt_tokens = accumulator.schema.usage.prompt_tokens + input_tokens
+
+	-- output_tokens:
+	elseif
+		obj.object == "chat.completion.chunk"
+		and obj.usage
+		and type(obj.usage) == "table"
+		and obj.usage.completion_tokens
+	then
+		local output_tokens = obj.usage.completion_tokens
+		accumulator.schema.usage.completion_tokens = accumulator.schema.usage.completion_tokens + output_tokens
+	end
+end
+
+---Lua pattern match for provider specific stream chunk data json
+---@type string
+openai.stream_pattern = "^data:%s*(.*)"
+
+---Data structure to accumulate stream for centralized parsing
+---@type table
+openai.response_schema = {
+	choices = {
+		{ message = { content = "" } },
+	},
+	usage = {
+		prompt_tokens = 0,
+		completion_tokens = 0,
+	},
+}
+
+openai.pricing = {
+	["gpt-4o-mini"] = {
+		input = 0.15,
+		output = 0.6,
+	},
+	["gpt-4o"] = {
+		input = 5,
+		output = 15,
+	},
+}
 
 return openai
