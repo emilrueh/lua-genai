@@ -49,7 +49,7 @@ See `main.lua` for a more detailed example.
 
 ### Future
 
-1. Streaming responses
+1. ~~Streaming responses~~
 2. Error handling
 3. Structured output
 4. Token cost tracking
