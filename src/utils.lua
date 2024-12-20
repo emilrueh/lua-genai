@@ -90,4 +90,22 @@ function utils.create_sse_callback(opts)
 	return chunk_callback
 end
 
+---Caculate model pricing from input and output tokens in USD
+---@param model string
+---@param usage table
+---@param pricing table
+---@return number
+function utils.calc_token_cost(model, usage, pricing)
+	local model_pricing = pricing[model]
+
+	if model_pricing then
+		local one_mil = 1000000
+		local input_cost = usage.input * (model_pricing.input / one_mil)
+		local output_cost = usage.output * (model_pricing.output / one_mil)
+		return input_cost + output_cost
+	else
+		return 0
+	end
+end
+
 return utils

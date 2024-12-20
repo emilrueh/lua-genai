@@ -1,3 +1,5 @@
+local utils = require("src.utils")
+
 ---@class Chat Accumulating chat history and usage
 ---@field _ai table
 ---@field model string
@@ -41,6 +43,10 @@ function Chat:say(user_prompt)
 	self.usage.input = self.usage.input + input_tokens
 	self.usage.output = self.usage.output + output_tokens
 	return reply
+end
+
+function Chat:get_cost()
+	return utils.calc_token_cost(self.model, self.usage, self._ai.provider.pricing)
 end
 
 return Chat

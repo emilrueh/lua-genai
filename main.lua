@@ -41,6 +41,8 @@ local function main()
 		print()
 		-- break
 	end
+
+	print(chat:get_cost() .. " usd")
 end
 
 main()
