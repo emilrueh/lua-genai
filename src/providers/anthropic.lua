@@ -26,17 +26,6 @@ function anthropic.construct_assistant_message(reply)
 	return assistant_message
 end
 
-function anthropic.init_settings(settings)
-	-- NOTE: required to make the chat independent of setting specifics
-
-	settings = {
-		max_tokens = settings.max_tokens or 1024,
-		stream = settings.stream or false,
-	}
-
-	return settings
-end
-
 ---Construct the request headers
 ---@param api_key string?
 ---@return table headers
@@ -58,9 +47,17 @@ function anthropic.construct_payload(opts)
 		model = opts.model,
 		messages = opts.history,
 		system = opts.system_prompt,
-		-- settings:
-		max_tokens = opts.settings.max_tokens,
+		-- basic settings:
+		max_tokens = opts.settings.max_tokens or 1024, -- required
+		temperature = opts.settings.temperature,
 		stream = opts.settings.stream,
+		-- advanced settings:
+		top_k = opts.settings.top_k,
+		top_p = opts.settings.top_p,
+		metadata = opts.settings.metadata, -- only user_id
+		stop_sequence = opts.settings.stop_sequence, -- broken
+		tools = opts.settings.tools, -- untested
+		tool_choice = opts.settings.tool_choice, -- untested
 	}
 
 	return payload
