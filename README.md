@@ -37,9 +37,11 @@ See `main.lua` for a more detailed example.
 
 ### Dependencies
 
-- [lua-https](https://github.com/love2d/lua-https)
-
 - [lua-cjson](https://github.com/openresty/lua-cjson)
+
+- [luasec](https://github.com/brunoos/luasec)
+
+- [luasocket](https://github.com/lunarmodules/luasocket.git)
 
 ## Status
 
@@ -47,9 +49,10 @@ See `main.lua` for a more detailed example.
 
 ### Future
 
-1. Streaming responses
+1. ~~Streaming responses~~
 2. Error handling
-3. Token cost tracking
-4. Gemini and open-source model integration
-5. Image models
-6. Audio models
+3. Structured output
+4. Token cost tracking
+5. Gemini and open-source model integration
+6. Image models
+7. Audio models

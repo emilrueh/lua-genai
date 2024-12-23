@@ -1,0 +1,8 @@
+# https://github.com/JohnnyMorganz/StyLua
+
+collapse_simple_statement = "ConditionalOnly"
+indent_type = "Tabs"
+indent_width = 3
+
+[sort_requires]
+enabled = false
