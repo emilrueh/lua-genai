@@ -47,10 +47,10 @@ local function main()
 		if user_prompt == ":m" then user_prompt = utils.get_multiline_input(":end") end
 		print()
 
-		local reply = chat:say(colors.output .. user_prompt .. colors.reset) -- API call
+		local reply = chat:say(user_prompt) -- API call
 
 		if not chat.settings.stream then
-			print(reply)
+			print(colors.output .. reply .. colors.reset)
 		else
 			print()
 		end
