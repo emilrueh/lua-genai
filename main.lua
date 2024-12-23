@@ -1,4 +1,5 @@
 local config = require("src.config")
+local utils = require("src.utils")
 local AI = require("src.ai")
 local Chat = require("src.chat")
 
@@ -27,6 +28,7 @@ local function main()
 	while true do
 		local user_prompt = io.read()
 		if user_prompt == ":q" then break end
+		if user_prompt == ":m" then user_prompt = utils.get_multiline_input(":end") end
 		print()
 
 		local reply = chat:say(user_prompt) -- API call
