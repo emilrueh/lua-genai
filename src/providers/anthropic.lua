@@ -1,5 +1,7 @@
 -- "https://api.anthropic.com/v1/messages"
 
+local colors = require("src.config").colors
+
 ---@module "src.ai.anthropic"
 local anthropic = {}
 
@@ -82,7 +84,7 @@ function anthropic.handle_stream_data(obj, accumulator)
 	if obj.type == "content_block_delta" and obj.delta and obj.delta.text then
 		local text = obj.delta.text
 		-- print chunked response text onto the same line
-		io.write(text)
+		io.write(colors.output .. text .. colors.reset)
 		io.flush()
 		-- accumulate response text
 		accumulator.schema.content[1].text = accumulator.schema.content[1].text .. text

@@ -4,6 +4,7 @@ local AI = require("src.ai")
 local Chat = require("src.chat")
 
 local api_keys = config.api_keys
+local colors = config.colors
 
 -- local api_key = api_keys.anthropic_api_key
 -- local endpoint = "https://api.anthropic.com/v1/messages"
@@ -25,7 +26,7 @@ local ai = AI.new(api_key, endpoint)
 local chat = Chat.new(ai, model, system_prompt, settings)
 
 local function main()
-	print(model .. "\n")
+	print(colors.info .. model .. colors.reset .. "\n")
 
 	while true do
 		io.write("> ")
@@ -36,7 +37,7 @@ local function main()
 		if user_prompt == ":m" then user_prompt = utils.get_multiline_input(":end") end
 		print()
 
-		local reply = chat:say(user_prompt) -- API call
+		local reply = chat:say(colors.output .. user_prompt .. colors.reset) -- API call
 
 		if not chat.settings.stream then
 			print(reply)
@@ -48,7 +49,9 @@ local function main()
 	end
 
 	local usd_token_cost = chat:get_cost()
-	if usd_token_cost >= 0.0001 then print("\n" .. usd_token_cost .. " usd") end
+	if usd_token_cost >= 0.0001 then
+		print("\n" .. colors.info .. string.format("%.4f", usd_token_cost) .. " usd" .. colors.reset)
+	end
 end
 
 main()

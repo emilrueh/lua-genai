@@ -1,5 +1,7 @@
 -- "https://api.openai.com/v1/chat/completions"
 
+local colors = require("src.config").colors
+
 ---@module "src.ai.openai"
 local openai = {}
 
@@ -51,6 +53,7 @@ function openai.construct_payload(opts)
 		-- basic settings:
 		stream = do_stream,
 		stream_options = do_stream and { include_usage = true } or nil,
+		-- TODO: add advanced settings
 	}
 
 	return payload
@@ -81,12 +84,12 @@ function openai.handle_stream_data(obj, accumulator)
 	then
 		local text = obj.choices[1].delta.content
 		-- print chunked response text onto the same line
-		io.write(text)
+		io.write(colors.output .. text .. colors.reset)
 		io.flush()
 		-- accumulate response text
 		accumulator.schema.choices[1].message.content = accumulator.schema.choices[1].message.content .. text
 
-	-- input_tokens:
+	-- prompt_tokens:
 	elseif
 		obj.object == "chat.completion.chunk"
 		and obj.usage
@@ -96,7 +99,7 @@ function openai.handle_stream_data(obj, accumulator)
 		local input_tokens = obj.usage.prompt_tokens
 		accumulator.schema.usage.prompt_tokens = accumulator.schema.usage.prompt_tokens + input_tokens
 
-	-- output_tokens:
+	-- completion_tokens:
 	elseif
 		obj.object == "chat.completion.chunk"
 		and obj.usage
@@ -124,6 +127,8 @@ openai.response_schema = {
 	},
 }
 
+---All model input and output pricing per million tokens
+---@type table
 openai.pricing = {
 	["gpt-4o-mini"] = {
 		input = 0.15,
