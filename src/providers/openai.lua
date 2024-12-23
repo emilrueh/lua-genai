@@ -133,6 +133,10 @@ openai.pricing = {
 		input = 5,
 		output = 15,
 	},
+	["gpt-4o-2024-11-20"] = {
+		input = 2.5,
+		output = 15,
+	},
 }
 
 return openai
