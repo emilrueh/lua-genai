@@ -25,7 +25,12 @@ local ai = AI.new(api_key, endpoint)
 local chat = Chat.new(ai, model, system_prompt, settings)
 
 local function main()
+	print(model .. "\n")
+
 	while true do
+		io.write("> ")
+		io.flush()
+
 		local user_prompt = io.read()
 		if user_prompt == ":q" then break end
 		if user_prompt == ":m" then user_prompt = utils.get_multiline_input(":end") end
@@ -42,7 +47,8 @@ local function main()
 		-- break
 	end
 
-	print(chat:get_cost() .. " usd")
+	local usd_token_cost = chat:get_cost()
+	if usd_token_cost >= 0.0001 then print("\n" .. usd_token_cost .. " usd") end
 end
 
 main()
