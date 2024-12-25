@@ -108,6 +108,41 @@ function utils.calc_token_cost(model, usage, pricing)
 	end
 end
 
+---Gather and select provider specific data
+---@param arg table Command line flags
+---@param api_keys table
+---@return string model
+---@return string api_key
+---@return string endpoint
+---@return table settings AI settings like max_tokens etc.
+function utils.get_provider_specifics(arg, api_keys)
+	local provider = arg[1]
+	local model = arg[2]
+	local api_key = nil
+	local endpoint = nil
+	local settings = nil
+
+	if provider == "openai" then
+		api_key = api_keys.openai_api_key
+		endpoint = "https://api.openai.com/v1/chat/completions"
+		model = model or "gpt-4o-mini"
+		settings = {
+			stream = true,
+		}
+	elseif provider == "anthropic" then
+		api_key = api_keys.anthropic_api_key
+		endpoint = "https://api.anthropic.com/v1/messages"
+		model = model or "claude-3-5-haiku-20241022"
+		settings = {
+			stream = true,
+		}
+	else
+		error("Provider " .. provider .. " is not supported!")
+	end
+
+	return model, api_key, endpoint, settings
+end
+
 ---Loop over input until not empty
 ---@param input_marker string? Character to display infront of user input
 ---@return string user_prompt
