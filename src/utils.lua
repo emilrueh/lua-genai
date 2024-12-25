@@ -137,7 +137,7 @@ function utils.get_provider_specifics(arg, api_keys)
 			stream = true,
 		}
 	else
-		error("Provider" .. ((provider and " " .. provider) or "") .. " is not supported!")
+		error("Provider" .. ((provider and (" " .. provider .. " ")) or " ") .. "is not supported!")
 	end
 
 	return model, api_key, endpoint, settings
