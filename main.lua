@@ -39,10 +39,7 @@ local function main()
 	print(colors.info .. model .. colors.reset .. "\n")
 
 	while true do
-		io.write("> ")
-		io.flush()
-
-		local user_prompt = io.read()
+		local user_prompt = utils.ensure_user_input("> ")
 		if user_prompt == ":q" then break end
 		if user_prompt == ":m" then user_prompt = utils.get_multiline_input(":end") end
 		print()

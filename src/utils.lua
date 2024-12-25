@@ -108,19 +108,34 @@ function utils.calc_token_cost(model, usage, pricing)
 	end
 end
 
+---Loop over input until not empty
+---@param input_marker string? Character to display infront of user input
+---@return string user_prompt
+function utils.ensure_user_input(input_marker)
+	input_marker = input_marker or ""
+	local user_prompt = ""
+
+	while true do
+		io.write(input_marker)
+		io.flush()
+		user_prompt = io.read()
+		if user_prompt and user_prompt ~= "" then return user_prompt end
+	end
+end
+
 ---Accumulate multi-line input until a marker is reached
----@param end_marker string
+---@param end_marker string?
 ---@return string user_prompt
 function utils.get_multiline_input(end_marker)
-	do
-		local lines = {}
-		while true do
-			local line = io.read()
-			if not line or line == end_marker then break end
-			table.insert(lines, line)
-		end
-		return table.concat(lines, "\n")
+	end_marker = end_marker or ":end"
+
+	local lines = {}
+	while true do
+		local line = io.read()
+		if not line or line == end_marker then break end
+		table.insert(lines, line)
 	end
+	return table.concat(lines, "\n")
 end
 
 return utils
