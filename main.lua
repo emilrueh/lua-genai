@@ -1,5 +1,4 @@
 local config = require("src.config")
-local utils = require("src.utils")
 local AI = require("src.ai")
 local Chat = require("src.chat")
 
@@ -25,15 +24,11 @@ local ai = AI.new(api_key, endpoint)
 local chat = Chat.new(ai, model, system_prompt, settings)
 
 local function main()
-	print(model .. "\n")
-
 	while true do
-		io.write("> ")
-		io.flush()
-
-		local user_prompt = io.read()
-		if user_prompt == ":q" then break end
-		if user_prompt == ":m" then user_prompt = utils.get_multiline_input(":end") end
+		local user_prompt = "Hello world."
+		print(user_prompt)
+		-- local user_prompt = io.read()
+		-- if user_prompt == ":q" then break end
 		print()
 
 		local reply = chat:say(user_prompt) -- API call
@@ -44,11 +39,11 @@ local function main()
 			print()
 		end
 		print()
-		-- break
+		break
 	end
 
 	local usd_token_cost = chat:get_cost()
-	if usd_token_cost >= 0.0001 then print("\n" .. usd_token_cost .. " usd") end
+	print(usd_token_cost .. "usd")
 end
 
 main()

@@ -108,19 +108,4 @@ function utils.calc_token_cost(model, usage, pricing)
 	end
 end
 
----Accumulate multi-line input until a marker is reached
----@param end_marker string
----@return string user_prompt
-function utils.get_multiline_input(end_marker)
-	do
-		local lines = {}
-		while true do
-			local line = io.read()
-			if not line or line == end_marker then break end
-			table.insert(lines, line)
-		end
-		return table.concat(lines, "\n")
-	end
-end
-
 return utils
