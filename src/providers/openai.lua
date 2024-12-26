@@ -34,7 +34,7 @@ end
 function openai.construct_headers(api_key)
 	local headers = {
 		["Content-Type"] = "application/json",
-		["Authorization"] = "Bearer " .. api_key,
+		["Authorization"] = "Bearer " .. tostring(api_key),
 	}
 	return headers
 end
@@ -71,8 +71,13 @@ end
 ---Parse and process provider specific chunked responses structure for text and token usage
 ---@param obj table JSON from string chunk
 function openai.handle_stream_data(obj, accumulator)
+	-- errors:
+	if obj.type == "error" and obj.error then
+		local err_msg = string.format("%s: %s", obj.error.type, obj.error.message)
+		error(err_msg)
+
 	-- text:
-	if
+	elseif
 		obj.object == "chat.completion.chunk"
 		and obj.choices
 		and #obj.choices > 0
@@ -105,6 +110,16 @@ function openai.handle_stream_data(obj, accumulator)
 	then
 		local output_tokens = obj.usage.completion_tokens
 		accumulator.schema.usage.completion_tokens = accumulator.schema.usage.completion_tokens + output_tokens
+	end
+end
+
+---Handle various status codes returned by the API
+---@param response table
+---@param status_code number
+function openai.handle_exceptions(response, status_code)
+	if status_code >= 300 then
+		local err_msg = string.format("%d %s: %s", status_code, response.error.type, response.error.message)
+		error(err_msg)
 	end
 end
 

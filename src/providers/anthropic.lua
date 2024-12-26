@@ -31,7 +31,7 @@ end
 ---@return table headers
 function anthropic.construct_headers(api_key)
 	local headers = {
-		["x-api-key"] = api_key,
+		["x-api-key"] = tostring(api_key),
 		["anthropic-version"] = "2023-06-01", -- https://docs.anthropic.com/en/api/versioning
 		["content-type"] = "application/json",
 	}
@@ -78,8 +78,13 @@ end
 ---Parse and process provider specific chunked responses structure for text and token usage
 ---@param obj table JSON from string chunk
 function anthropic.handle_stream_data(obj, accumulator)
+	-- errors:
+	if obj.type == "error" and obj.error then
+		local err_msg = string.format("%s: %s", obj.error.type, obj.error.message)
+		error(err_msg)
+
 	-- text:
-	if obj.type == "content_block_delta" and obj.delta and obj.delta.text then
+	elseif obj.type == "content_block_delta" and obj.delta and obj.delta.text then
 		local text = obj.delta.text
 		-- print chunked response text onto the same line
 		io.write(text)
@@ -96,6 +101,16 @@ function anthropic.handle_stream_data(obj, accumulator)
 	elseif obj.type == "message_delta" and obj.usage and obj.usage.output_tokens then
 		local output_tokens = obj.usage.output_tokens
 		accumulator.schema.usage.output_tokens = accumulator.schema.usage.output_tokens + output_tokens
+	end
+end
+
+---Handle various status codes returned by the API
+---@param response table
+---@param status_code number
+function anthropic.handle_exceptions(response, status_code)
+	if status_code >= 300 then
+		local err_msg = string.format("%d %s: %s", status_code or "", response.error.type, response.error.message)
+		error(err_msg)
 	end
 end
 
