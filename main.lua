@@ -8,7 +8,8 @@ local colors = config.colors
 
 local model, api_key, endpoint, settings = utils.get_provider_specifics(arg, api_keys)
 
-local system_prompt = "Respond extremely briefly."
+-- local system_prompt = "Respond extremely briefly."
+local system_prompt = io.open("system_prompt.md", "r"):read("*all")
 
 local ai = AI.new(api_key, endpoint)
 local chat = Chat.new(ai, model, system_prompt, settings)
