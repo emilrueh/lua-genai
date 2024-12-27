@@ -13,9 +13,9 @@ local utils = {}
 ---@param method string?
 ---@param headers table?
 ---@param callback function?
----@return string body
----@return table response_headers
-function utils.send_request(url, payload, method, headers, callback)
+---@param exception_handler function?
+---@return string|table body
+function utils.send_request(url, payload, method, headers, callback, exception_handler)
 	local response_body = {}
 	local final_sink = ltn12.sink.table(response_body)
 
@@ -38,10 +38,19 @@ function utils.send_request(url, payload, method, headers, callback)
 	}
 
 	local _, status_code, response_headers = https.request(request_opts)
-
 	local body = table.concat(response_body)
-	assert(status_code == 200, body)
-	return body, response_headers
+
+	-- decode body if json response
+	if response_headers["content-type"]:find("application/json") then body = cjson.decode(body) end
+
+	-- handle status codes
+	if exception_handler then
+		exception_handler(body, status_code)
+	else
+		assert(status_code == 200, body)
+	end
+
+	return body
 end
 
 ---Storage for full stream response
