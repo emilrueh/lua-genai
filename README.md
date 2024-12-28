@@ -4,18 +4,18 @@ A developer-friendly Lua interface for working with multiple generative AI provi
 
 ## Providers
 
+> ⚠️ This is a work in progress so any help is appreciated!
+
 - [OpenAI](https://platform.openai.com/docs/overview)
 
 - [Anthropic](https://docs.anthropic.com/en/home)
 
-> ⚠️ This is a work in progress so any help is appreciated!
-
 ## Features
 
-- Easily switch between AI chat model providers.
-- Pass in prompts and get replies without the provider complexity.
-- Easily integrate new models and adjust settings.
-- Work directly with the `src.ai` client for more granular control.
+- Easily switch between AI chat model providers
+- Pass in prompts and get replies without the provider complexity
+- Easily integrate new models and adjust settings
+- Work directly with the `src.ai` client for more granular control
 - Abstraction for structured response JSON output
 - Token usage tracking with cost calculation
 
@@ -50,9 +50,9 @@ See `main.lua` for a more detailed example.
 
 ## Roadmap
 
-- Advanced error handling
-- Google Gemini integration
-- Audio models
-- Image models
-- Open-Source model integration
-- Video models
+1. Advanced error handling
+2. Google Gemini integration
+3. Audio models
+4. Image models
+5. Open-Source model integration
+6. Video models
