@@ -4,18 +4,33 @@ local Chat = require("src.chat")
 
 local api_keys = config.api_keys
 
+local structured_response_obj = {
+	title = "NPC",
+	description = "Response schema of NPCs.",
+	schema = {
+		name = {
+			type = "string",
+		},
+		response = {
+			type = "string",
+		},
+	},
+}
+
 -- local api_key = api_keys.anthropic_api_key
 -- local endpoint = "https://api.anthropic.com/v1/messages"
--- local model = "claude-3-5-haiku-20241022"
+-- local model = "claude-3-5-sonnet-20241022"
 -- local settings = {
--- 	stream = true,
+-- 	stream = false,
+-- 	json = structured_response_obj,
 -- }
 
 local api_key = api_keys.openai_api_key
 local endpoint = "https://api.openai.com/v1/chat/completions"
 local model = "gpt-4o-mini"
 local settings = {
-	stream = true,
+	stream = false,
+	json = structured_response_obj,
 }
 
 local system_prompt = "Respond extremely briefly."
@@ -25,8 +40,10 @@ local chat = Chat.new(ai, model, system_prompt, settings)
 
 local function main()
 	while true do
-		local user_prompt = io.read()
-		if user_prompt == ":q" then break end
+		local user_prompt = "You are King Torben giving advice."
+		print(user_prompt)
+		-- local user_prompt = io.read()
+		-- if user_prompt == ":q" then break end
 		print()
 
 		local reply = chat:say(user_prompt) -- API call
@@ -37,10 +54,11 @@ local function main()
 			print()
 		end
 		print()
-		-- break
+		break
 	end
 
-	print(chat:get_cost() .. " usd")
+	local usd_token_cost = chat:get_cost()
+	print(usd_token_cost .. "usd")
 end
 
 main()

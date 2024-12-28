@@ -69,8 +69,21 @@ end
 ---@return number output_tokens
 function AI:call(opts)
 	local headers, payload, callback, accumulator = self:_prepare_response_requirements(opts)
-	local response = utils.send_request(self._endpoint, cjson.encode(payload), "POST", headers, callback)
-	return self.provider.extract_response_data(accumulator and accumulator.schema or cjson.decode(response))
+
+	local response = utils.send_request(
+		self._endpoint,
+		cjson.encode(payload),
+		"POST",
+		headers,
+		callback,
+		self.provider.handle_exceptions
+	)
+
+	local reply, input_tokens, output_tokens =
+		self.provider.extract_response_data(accumulator and accumulator.schema or response)
+	reply = type(reply) == "table" and cjson.encode(reply) or reply -- ensure json output is string
+
+	return reply, input_tokens, output_tokens
 end
 
 return AI

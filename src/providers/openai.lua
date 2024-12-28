@@ -34,9 +34,28 @@ end
 function openai.construct_headers(api_key)
 	local headers = {
 		["Content-Type"] = "application/json",
-		["Authorization"] = "Bearer " .. api_key,
+		["Authorization"] = "Bearer " .. tostring(api_key),
 	}
 	return headers
+end
+
+---Abstract structuring json responses
+---@param opts table {title: string, description: string, schema: table}
+---@return table? response_format
+local function construct_json_schema(opts)
+	if opts then
+		return {
+			type = "json_schema",
+			json_schema = {
+				schema = {
+					type = "object",
+					properties = opts.schema,
+				},
+				name = opts.title,
+				description = opts.description,
+			},
+		}
+	end
 end
 
 ---Package AI settings
@@ -51,6 +70,8 @@ function openai.construct_payload(opts)
 		-- basic settings:
 		stream = do_stream,
 		stream_options = do_stream and { include_usage = true } or nil,
+		-- TODO: add advanced settings
+		response_format = opts.settings.response_format or construct_json_schema(opts.settings.json),
 	}
 
 	return payload
@@ -71,8 +92,13 @@ end
 ---Parse and process provider specific chunked responses structure for text and token usage
 ---@param obj table JSON from string chunk
 function openai.handle_stream_data(obj, accumulator)
+	-- errors:
+	if obj.type == "error" and obj.error then
+		local err_msg = string.format("%s: %s", obj.error.type, obj.error.message)
+		error(err_msg)
+
 	-- text:
-	if
+	elseif
 		obj.object == "chat.completion.chunk"
 		and obj.choices
 		and #obj.choices > 0
@@ -108,6 +134,16 @@ function openai.handle_stream_data(obj, accumulator)
 	end
 end
 
+---Handle various status codes returned by the API
+---@param response table
+---@param status_code number
+function openai.handle_exceptions(response, status_code)
+	if status_code >= 300 then
+		local err_msg = string.format("%d %s: %s", status_code, response.error.type, response.error.message)
+		error(err_msg)
+	end
+end
+
 ---Lua pattern match for provider specific stream chunk data json
 ---@type string
 openai.stream_pattern = "^data:%s*(.*)"
@@ -131,6 +167,10 @@ openai.pricing = {
 	},
 	["gpt-4o"] = {
 		input = 5,
+		output = 15,
+	},
+	["gpt-4o-2024-11-20"] = {
+		input = 2.5,
 		output = 15,
 	},
 }
