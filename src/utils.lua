@@ -123,10 +123,12 @@ end
 ---@return string model
 ---@return string api_key
 ---@return string endpoint
+---@return string path_to_system_prompt
 ---@return table settings AI settings like max_tokens etc.
 function utils.get_provider_specifics(arg, api_keys)
 	local provider = arg[1]
 	local model = arg[2]
+	local path_to_system_prompt = arg[3]
 	local api_key = nil
 	local endpoint = nil
 	local settings = nil
@@ -149,7 +151,7 @@ function utils.get_provider_specifics(arg, api_keys)
 		error("Provider" .. ((provider and (" " .. provider .. " ")) or " ") .. "is not supported!")
 	end
 
-	return model, api_key, endpoint, settings
+	return model, api_key, endpoint, path_to_system_prompt, settings
 end
 
 ---Loop over input until not empty

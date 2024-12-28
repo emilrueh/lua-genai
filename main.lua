@@ -6,10 +6,8 @@ local Chat = require("src.chat")
 local api_keys = config.api_keys
 local colors = config.colors
 
-local model, api_key, endpoint, settings = utils.get_provider_specifics(arg, api_keys)
-
--- local system_prompt = "Respond extremely briefly."
-local system_prompt = io.open("system_prompt.md", "r"):read("*all")
+local model, api_key, endpoint, path_to_system_prompt, settings = utils.get_provider_specifics(arg, api_keys)
+local system_prompt = path_to_system_prompt and io.open(path_to_system_prompt, "r"):read("*all") or nil
 
 local ai = AI.new(api_key, endpoint)
 local chat = Chat.new(ai, model, system_prompt, settings)
