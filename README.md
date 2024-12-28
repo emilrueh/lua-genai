@@ -8,6 +8,8 @@ A developer-friendly Lua interface for working with multiple generative AI provi
 
 - [Anthropic](https://docs.anthropic.com/en/home)
 
+> ⚠️ This is a work in progress so any help is appreciated!
+
 ## Features
 
 - Easily switch between AI chat model providers.
@@ -46,11 +48,7 @@ See `main.lua` for a more detailed example.
 
 - [luasocket](https://github.com/lunarmodules/luasocket.git)
 
-## Status
-
-⚠️ This is a work in progress so any help is appreciated!
-
-### Planned
+## Roadmap
 
 - Advanced error handling
 - Google Gemini integration
