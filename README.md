@@ -27,21 +27,7 @@ local api_key = "<YOUR_API_KEY>"
 local endpoint = "https://api.openai.com/v1/chat/completions"
 local model = "gpt-4o-mini"
 local system_prompt = "You are Torben, the king of a nation."
-local settings = {
-	stream = false,
-	json = {
-		title = "NPC",
-		description = "Response schema of NPCs.",
-		schema = {
-			name = {
-				type = "string",
-			},
-			response = {
-				type = "string",
-			},
-		},
-	},
-}
+local settings = { stream = true }
 
 local ai = AI.new(api_key, endpoint)
 local chat = Chat.new(ai, model, system_prompt, settings)
