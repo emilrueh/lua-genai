@@ -54,7 +54,7 @@ See `main.lua` for a more detailed example.
 
 - Advanced error handling
 - Google Gemini integration
-- Open-Source model integration
-- Image models
 - Audio models
+- Image models
+- Open-Source model integration
 - Video models
