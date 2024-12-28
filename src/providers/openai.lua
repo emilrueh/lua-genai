@@ -41,19 +41,21 @@ end
 
 ---Abstract structuring json responses
 ---@param opts table {title: string, description: string, schema: table}
----@return table response_format
+---@return table? response_format
 local function construct_json_schema(opts)
-	return {
-		type = "json_schema",
-		json_schema = {
-			schema = {
-				type = "object",
-				properties = opts.schema,
+	if opts then
+		return {
+			type = "json_schema",
+			json_schema = {
+				schema = {
+					type = "object",
+					properties = opts.schema,
+				},
+				name = opts.title,
+				description = opts.description,
 			},
-			name = opts.title,
-			description = opts.description,
-		},
-	}
+		}
+	end
 end
 
 ---Package AI settings
