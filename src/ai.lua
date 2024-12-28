@@ -79,7 +79,11 @@ function AI:call(opts)
 		self.provider.handle_exceptions
 	)
 
-	return self.provider.extract_response_data(accumulator and accumulator.schema or response)
+	local reply, input_tokens, output_tokens =
+		self.provider.extract_response_data(accumulator and accumulator.schema or response)
+	reply = type(reply) == "table" and cjson.encode(reply) or reply -- ensure json output is string
+
+	return reply, input_tokens, output_tokens
 end
 
 return AI

@@ -41,6 +41,25 @@ function openai.construct_headers(api_key)
 	return headers
 end
 
+---Abstract structuring json responses
+---@param opts table {title: string, description: string, schema: table}
+---@return table? response_format
+local function construct_json_schema(opts)
+	if opts then
+		return {
+			type = "json_schema",
+			json_schema = {
+				schema = {
+					type = "object",
+					properties = opts.schema,
+				},
+				name = opts.title,
+				description = opts.description,
+			},
+		}
+	end
+end
+
 ---Package AI settings
 ---@param opts table
 ---@return table
@@ -54,6 +73,7 @@ function openai.construct_payload(opts)
 		stream = do_stream,
 		stream_options = do_stream and { include_usage = true } or nil,
 		-- TODO: add advanced settings
+		response_format = opts.settings.response_format or construct_json_schema(opts.settings.json),
 	}
 
 	return payload
