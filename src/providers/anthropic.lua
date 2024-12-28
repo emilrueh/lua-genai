@@ -39,6 +39,24 @@ function anthropic.construct_headers(api_key)
 	return headers
 end
 
+---Abstract structuring json responses
+---@param opts table {title: string, description: string, schema: table}
+---@return table? response_format
+local function construct_json_schema(opts)
+	if opts then
+		return {
+			{
+				name = opts.title,
+				description = opts.description,
+				input_schema = {
+					type = "object",
+					properties = opts.schema,
+				},
+			},
+		}
+	end
+end
+
 ---Packaging AI settings
 ---@param opts table
 ---@return table
@@ -56,8 +74,8 @@ function anthropic.construct_payload(opts)
 		top_p = opts.settings.top_p,
 		metadata = opts.settings.metadata, -- only user_id
 		stop_sequence = opts.settings.stop_sequence, -- broken
-		tools = opts.settings.tools, -- untested
-		tool_choice = opts.settings.tool_choice, -- untested
+		tools = opts.settings.tools or construct_json_schema(opts.settings.json), -- allow json abstraction
+		tool_choice = opts.settings.json and { type = "any" } or opts.settings.tool_choice, -- if json force any
 	}
 
 	return payload
@@ -69,7 +87,7 @@ end
 ---@return number input_tokens
 ---@return number output_tokens
 function anthropic.extract_response_data(response)
-	local reply = response.content[1].text
+	local reply = response.content[1].text or response.content[1].input -- plain text or tool use
 	local input_tokens = response.usage.input_tokens
 	local output_tokens = response.usage.output_tokens
 	return reply, input_tokens, output_tokens
@@ -84,8 +102,8 @@ function anthropic.handle_stream_data(obj, accumulator)
 		error(err_msg)
 
 	-- text:
-	elseif obj.type == "content_block_delta" and obj.delta and obj.delta.text then
-		local text = obj.delta.text
+	elseif obj.type == "content_block_delta" and obj.delta then
+		local text = obj.delta.text or obj.delta.partial_json
 		-- print chunked response text onto the same line
 		io.write(text)
 		io.flush()
