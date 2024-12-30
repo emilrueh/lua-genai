@@ -24,20 +24,20 @@ A developer-friendly Lua interface for working with multiple generative AI provi
 ```lua
 local AI = require("src.ai")
 
-local ai = AI.new("<YOUR_API_KEY>", "https://api.openai.com/v1/chat/completions")
+local client = AI.new("<YOUR_API_KEY>", "https://api.openai.com/v1/chat/completions")
 ```
 
 ### Minimal
 
 ```lua
-local chat = ai:chat("gpt-4o-mini")
+local chat = client:chat("gpt-4o-mini")
 print(chat:say("Hello, world!"))
 ```
 
 ### Streaming
 
 ```lua
-local chat = ai:chat("gpt-4o-mini", { settings = { stream = true } })
+local chat = client:chat("gpt-4o-mini", { settings = { stream = true } })
 chat:say("Hello, world!")
 ```
 
@@ -56,7 +56,7 @@ local json_object = {
 	schema = npc_schema,
 }
 
-local chat = ai:chat("gpt-4o-mini", { settings = { json = json_object } })
+local chat = client:chat("gpt-4o-mini", { settings = { json = json_object } })
 print(chat:say("Create a powerful wizard called Torben."))
 ```
 

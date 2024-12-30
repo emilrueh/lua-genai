@@ -25,8 +25,8 @@ local endpoint = "https://api.openai.com/v1/chat/completions"
 local model = "gpt-4o-mini"
 
 local function main()
-	local ai = AI.new(api_key, endpoint)
-	local chat = ai:chat(model, {
+	local client = AI.new(api_key, endpoint)
+	local chat = client:chat(model, {
 		system_prompt = "Respond extremely briefly.",
 		settings = {
 			stream = false,
