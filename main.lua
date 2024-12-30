@@ -19,25 +19,21 @@ local structured_response_obj = {
 -- local api_key = api_keys.anthropic_api_key
 -- local endpoint = "https://api.anthropic.com/v1/messages"
 -- local model = "claude-3-5-sonnet-20241022"
--- local settings = {
--- 	stream = false,
--- 	json = structured_response_obj,
--- }
 
 local api_key = api_keys.openai_api_key
 local endpoint = "https://api.openai.com/v1/chat/completions"
 local model = "gpt-4o-mini"
-local settings = {
-	stream = false,
-	json = structured_response_obj,
-}
-
-local system_prompt = "Respond extremely briefly."
-
-local ai = AI.new(api_key, endpoint)
-local chat = ai:chat(model, system_prompt, settings)
 
 local function main()
+	local ai = AI.new(api_key, endpoint)
+	local chat = ai:chat(model, {
+		system_prompt = "Respond extremely briefly.",
+		settings = {
+			stream = false,
+			json = structured_response_obj,
+		},
+	})
+
 	while true do
 		local user_prompt = "You are King Torben giving advice."
 		print(user_prompt)
