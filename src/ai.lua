@@ -1,6 +1,8 @@
 local config = require("src.config")
 local utils = require("src.utils")
-local providers = require("src.providers._load")
+local providers = require("src.providers")
+local features = require("src.features")
+
 local cjson = config.cjson
 
 ---Client for interacting with specified API endpoint
@@ -84,6 +86,16 @@ function AI:call(opts)
 	reply = type(reply) == "table" and cjson.encode(reply) or reply -- ensure json output is string
 
 	return reply, input_tokens, output_tokens
+end
+
+-- features:
+
+---Create chat instance with automatic tracking of messages and tokens
+---@param model string
+---@param opts table? Containing **settings** and or **system_prompt**
+---@return Chat
+function AI:chat(model, opts)
+	return features.Chat.new(self, model, opts)
 end
 
 return AI
