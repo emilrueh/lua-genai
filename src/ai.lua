@@ -92,11 +92,10 @@ end
 
 ---Create chat instance with automatic tracking of messages and tokens
 ---@param model string
----@param system_prompt string
----@param settings table
+---@param opts table? Containing **settings** and or **system_prompt**
 ---@return Chat
-function AI:chat(model, system_prompt, settings)
-	return features.Chat.new(self, model, system_prompt, settings)
+function AI:chat(model, opts)
+	return features.Chat.new(self, model, opts)
 end
 
 return AI
