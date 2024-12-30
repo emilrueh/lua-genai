@@ -1,6 +1,5 @@
 local config = require("src.config")
 local AI = require("src.ai")
-local Chat = require("src.chat")
 
 local api_keys = config.api_keys
 
@@ -36,7 +35,7 @@ local settings = {
 local system_prompt = "Respond extremely briefly."
 
 local ai = AI.new(api_key, endpoint)
-local chat = Chat.new(ai, model, system_prompt, settings)
+local chat = ai:chat(model, system_prompt, settings)
 
 local function main()
 	while true do
