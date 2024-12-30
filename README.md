@@ -21,49 +21,42 @@ A developer-friendly Lua interface for working with multiple generative AI provi
 
 ## Usage
 
-### Minimal
-
 ```lua
 local AI = require("src.ai")
 
 local ai = AI.new("<YOUR_API_KEY>", "https://api.openai.com/v1/chat/completions")
-local chat = ai:chat("gpt-4o-mini")
+```
 
+### Minimal
+
+```lua
+local chat = ai:chat("gpt-4o-mini")
 print(chat:say("Hello, world!"))
 ```
 
 ### Streaming
 
 ```lua
-local AI = require("src.ai")
-
-local ai = AI.new("<YOUR_API_KEY>", "https://api.openai.com/v1/chat/completions")
 local chat = ai:chat("gpt-4o-mini", { settings = { stream = true } })
-
 chat:say("Hello, world!")
 ```
 
 ### JSON
 
 ```lua
-local AI = require("src.ai")
-local ai = AI.new("<YOUR_API_KEY>", "https://api.openai.com/v1/chat/completions")
-
-local response_schema = {
+local npc_schema = {
 	name = { type = "string" },
+	class = { type = "string" },
 	level = { type = "integer" },
 }
 
-local chat = ai:chat("gpt-4o-mini", {
-	settings = {
-		json = {
-			title = "NPC",
-			description = "A non-player character's attributes.",
-			schema = response_schema,
-		},
-	},
-})
+local json_object = {
+	title = "NPC",
+	description = "A non-player character's attributes.",
+	schema = npc_schema,
+}
 
+local chat = ai:chat("gpt-4o-mini", { settings = { json = json_object } })
 print(chat:say("Create a powerful wizard called Torben."))
 ```
 
