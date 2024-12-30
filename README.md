@@ -68,8 +68,6 @@ See `main.lua` for a more detailed example.
 
 - [luasec](https://github.com/brunoos/luasec)
 
-- [luasocket](https://github.com/lunarmodules/luasocket.git)
-
 ## Roadmap
 
 1. Advanced error handling
