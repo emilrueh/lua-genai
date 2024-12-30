@@ -4,7 +4,7 @@ A developer-friendly Lua interface for working with multiple generative AI provi
 
 ## Providers
 
-> ⚠️ This is a work in progress so any help is appreciated!
+> ⚠️ This is a work in progress so any help is highly appreciated!
 
 - [OpenAI](https://platform.openai.com/docs/overview)
 
@@ -21,21 +21,50 @@ A developer-friendly Lua interface for working with multiple generative AI provi
 
 ## Usage
 
+### Minimal
+
 ```lua
 local AI = require("src.ai")
-local Chat = require("src.chat")
 
-local api_key = "<YOUR_API_KEY>"
-local endpoint = "https://api.openai.com/v1/chat/completions"
-local model = "gpt-4o-mini"
-local system_prompt = "You are Torben, the king of a nation."
-local settings = { stream = true }
+local ai = AI.new("<YOUR_API_KEY>", "https://api.openai.com/v1/chat/completions")
+local chat = ai:chat("gpt-4o-mini")
 
-local ai = AI.new(api_key, endpoint)
-local chat = Chat.new(ai, model, system_prompt, settings)
+print(chat:say("Hello, world!"))
+```
 
-local reply = chat:say("Give three short words of advice to the hero.")
-if not chat.settings.stream then print(reply) end
+### Streaming
+
+```lua
+local AI = require("src.ai")
+
+local ai = AI.new("<YOUR_API_KEY>", "https://api.openai.com/v1/chat/completions")
+local chat = ai:chat("gpt-4o-mini", { settings = { stream = true } })
+
+chat:say("Hello, world!")
+```
+
+### JSON
+
+```lua
+local AI = require("src.ai")
+local ai = AI.new("<YOUR_API_KEY>", "https://api.openai.com/v1/chat/completions")
+
+local response_schema = {
+	name = { type = "string" },
+	level = { type = "integer" },
+}
+
+local chat = ai:chat("gpt-4o-mini", {
+	settings = {
+		json = {
+			title = "NPC",
+			description = "A non-player character's attributes.",
+			schema = response_schema,
+		},
+	},
+})
+
+print(chat:say("Create a powerful wizard called Torben."))
 ```
 
 See `main.lua` for a more detailed example.
