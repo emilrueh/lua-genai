@@ -4,6 +4,7 @@ version = "0.1-1"
 source = {
 	url = "https://github.com/emilrueh/lua-genai.git",
 	tag = "v0.1",
+	type = "git",
 }
 
 description = {
