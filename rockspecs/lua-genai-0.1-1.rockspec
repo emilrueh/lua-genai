@@ -1,3 +1,5 @@
+rockspec_format = "2.0"
+
 package = "lua-genai"
 version = "0.1-1"
 
