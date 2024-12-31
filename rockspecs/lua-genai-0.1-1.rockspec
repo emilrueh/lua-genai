@@ -8,7 +8,7 @@ source = {
 
 description = {
 	summary = "Generative AI SDK",
-	detailed = "A developer-friendly interface for working with multiple generative AI providers, abstracting away provider-specific payload structures and response parsing so you can easily switch between various models and providers like OpenAI, Anthropic, Google Gemini, etc. without rewriting any code.",
+	detailed = "Interface for generative AI providers like OpenAI, Anthropic, Google Gemini, etc. abstracting away provider-specific payload structures and response parsing to simplify switching models.",
 	homepage = "https://github.com/emilrueh/lua-genai",
 	license = "Zlib",
 }
