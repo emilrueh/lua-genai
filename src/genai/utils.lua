@@ -1,10 +1,8 @@
-local config = require("src.config")
+local cjson = require("cjson")
+local https = require("ssl.https")
+local ltn12 = require("ltn12")
 
-local cjson = config.cjson
-local https = config.https
-local ltn12 = config.ltn12
-
----@module "src.utils"
+---@module "genai.utils"
 local utils = {}
 
 ---Https request with partial response functionality via callback

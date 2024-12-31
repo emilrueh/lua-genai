@@ -1,9 +1,7 @@
-local config = require("src.config")
-local utils = require("src.utils")
-local providers = require("src.providers")
-local features = require("src.features")
-
-local cjson = config.cjson
+local cjson = require("cjson")
+local utils = require("genai.utils")
+local providers = require("genai.providers")
+local features = require("genai.features")
 
 ---Client for interacting with specified API endpoint
 ---@class GenAI
