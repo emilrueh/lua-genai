@@ -77,7 +77,7 @@ local chat = client:chat("gpt-4o-mini", { settings = { json = json_object } })
 print(chat:say("Create a powerful wizard called Torben."))
 ```
 
-See `main.lua` for a more detailed example.
+See `example.lua` for a full-featured Anthropic implementation.
 
 ## Dependencies
 
