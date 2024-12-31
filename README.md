@@ -1,6 +1,6 @@
-# Unified Lua Interface for Generative AI
+# Generative AI SDK for Lua
 
-A developer-friendly Lua interface for working with multiple generative AI providers, abstracting away provider-specific payload structures and response parsing so you can easily switch between various models and providers without rewriting any code.
+A developer-friendly Lua interface for working with various generative AI providers, abstracting away provider-specific payload structures and response parsing so that using multiple models is easy.
 
 ## Providers
 
@@ -15,33 +15,50 @@ A developer-friendly Lua interface for working with multiple generative AI provi
 - Easily switch between AI chat model providers
 - Pass in prompts and get replies without the provider complexity
 - Easily integrate new models and adjust settings
-- Work directly with the `src.ai` client for more granular control
+- Use the `chat` object for integrated message handling
+- Use the `genai` client directly for more granular control if needed
 - Abstraction for structured response JSON output
 - Token usage tracking with cost calculation
+
+## Installation
+
+```
+luarocks install lua-genai
+```
 
 ## Usage
 
 ```lua
-local AI = require("src.ai")
+local genai = require("genai")
 
-local client = AI.new("<YOUR_API_KEY>", "https://api.openai.com/v1/chat/completions")
-```
+local client = genai.new("<YOUR_API_KEY>", "https://api.openai.com/v1/chat/completions")
 
-### Minimal
-
-```lua
 local chat = client:chat("gpt-4o-mini")
 print(chat:say("Hello, world!"))
+```
+
+### System Prompt
+
+```lua
+local chat = client:chat("gpt-4o-mini", { system_prompt = "You are a fish." })
+print(chat:say("What are you?"))
 ```
 
 ### Streaming
 
 ```lua
-local chat = client:chat("gpt-4o-mini", { settings = { stream = true } })
-chat:say("Hello, world!")
+local process_stream = function(text)
+	io.write(text)
+	io.flush()
+end
+
+local chat = client:chat("gpt-4o-mini", { settings = { stream = process_stream } })
+chat:say("Tell me a very short story.")
+print()
+
 ```
 
-### JSON
+### JSON Response
 
 ```lua
 local npc_schema = {
@@ -60,15 +77,13 @@ local chat = client:chat("gpt-4o-mini", { settings = { json = json_object } })
 print(chat:say("Create a powerful wizard called Torben."))
 ```
 
-See `main.lua` for a more detailed example.
+See `example.lua` for a full-featured Anthropic implementation.
 
-### Dependencies
+## Dependencies
 
 - [lua-cjson](https://github.com/openresty/lua-cjson)
 
 - [luasec](https://github.com/brunoos/luasec)
-
-- [luasocket](https://github.com/lunarmodules/luasocket.git)
 
 ## Roadmap
 

@@ -1,10 +1,8 @@
-local config = require("src.config")
+local cjson = require("cjson")
+local https = require("ssl.https")
+local ltn12 = require("ltn12")
 
-local cjson = config.cjson
-local https = config.https
-local ltn12 = config.ltn12
-
----@module "src.utils"
+---@module "genai.utils"
 local utils = {}
 
 ---Https request with partial response functionality via callback
@@ -68,11 +66,11 @@ end
 
 utils.Accumulator = Accumulator
 
----Generic parsing of SSE via callback
+---Closure to parse SSE via callback
 ---@param opts table
 ---@return function chunk_callback
 function utils.create_sse_callback(opts)
-	local pattern, handler, accumulator = table.unpack(opts)
+	local pattern, handler = table.unpack(opts)
 
 	local buffer = ""
 
@@ -92,7 +90,7 @@ function utils.create_sse_callback(opts)
 			local json_str = line:match(pattern)
 			if json_str then
 				local ok, obj = pcall(cjson.decode, json_str)
-				if ok and obj then handler(obj, accumulator) end
+				if ok and obj then handler(obj) end
 			end
 		end
 	end
