@@ -55,7 +55,6 @@ end
 local chat = client:chat("gpt-4o-mini", { settings = { stream = process_stream } })
 chat:say("Tell me a very short story.")
 print()
-
 ```
 
 ### JSON Response
