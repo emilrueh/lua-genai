@@ -1,6 +1,6 @@
-local config = require("src.config")
-local utils = require("src.utils")
-local AI = require("src.ai")
+local genai = require("genai")
+local config = require("src.genai.config")
+local utils = require("src.genai.utils")
 
 local api_keys = config.api_keys
 local colors = config.colors
@@ -8,7 +8,7 @@ local colors = config.colors
 local model, api_key, endpoint, path_to_system_prompt, settings = utils.get_provider_specifics(arg, api_keys)
 local system_prompt = path_to_system_prompt and io.open(path_to_system_prompt, "r"):read("*all") or nil
 
-local client = AI.new(api_key, endpoint)
+local client = genai.new(api_key, endpoint)
 local chat = client:chat(model, {
 	system_prompt = system_prompt,
 	settings = settings,
