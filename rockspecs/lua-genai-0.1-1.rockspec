@@ -21,7 +21,7 @@ dependencies = {
 
 build = {
 	type = "builtin",
-	-- copy_directories = { "docs", "examples" },
+	-- copy_directories = { "docs" },
 	modules = {
 		["genai"] = "src/genai/init.lua",
 		["genai.genai"] = "src/genai/genai.lua",
