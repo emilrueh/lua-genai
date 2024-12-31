@@ -35,17 +35,19 @@ function GenAI:_determine_provider(providers)
 end
 
 ---Prepare streaming requirements if set to stream
----@param payload table
+---@param processor function? Display of streamed text chunks
 ---@return table? accumulator Schema storing full streamed response
 ---@return function? callback Streaming handler
-function GenAI:_setup_stream(payload)
+function GenAI:_setup_stream(processor)
 	local accumulator = nil
 	local callback = nil
-	if payload.stream then
+
+	if processor then
 		accumulator = utils.Accumulator.new(cjson.encode(self.provider.response_schema))
-		local callback_opts = { self.provider.stream_pattern, self.provider.handle_stream_data, accumulator }
-		callback = payload.stream and utils.create_sse_callback(callback_opts)
+		local handler = self.provider.create_stream_handler(accumulator, processor)
+		callback = utils.create_sse_callback({ self.provider.stream_pattern, handler })
 	end
+
 	return accumulator, callback
 end
 
@@ -58,7 +60,7 @@ end
 function GenAI:_prepare_response_requirements(opts)
 	local headers = self.provider.construct_headers(self._api_key)
 	local payload = self.provider.construct_payload(opts)
-	local accumulator, callback = self:_setup_stream(payload)
+	local accumulator, callback = self:_setup_stream(opts.settings.stream)
 	return headers, payload, callback, accumulator
 end
 

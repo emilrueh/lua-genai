@@ -37,14 +37,28 @@ local chat = client:chat("gpt-4o-mini")
 print(chat:say("Hello, world!"))
 ```
 
+### System Prompt
+
+```lua
+local chat = client:chat("gpt-4o-mini", { system_prompt = "You are a fish." })
+print(chat:say("What are you?"))
+```
+
 ### Streaming
 
 ```lua
-local chat = client:chat("gpt-4o-mini", { settings = { stream = true } })
-chat:say("Hello, world!")
+local process_stream = function(text)
+	io.write(text)
+	io.flush()
+end
+
+local chat = client:chat("gpt-4o-mini", { settings = { stream = process_stream } })
+chat:say("Tell me a very short story.")
+print()
+
 ```
 
-### JSON
+### JSON Response
 
 ```lua
 local npc_schema = {

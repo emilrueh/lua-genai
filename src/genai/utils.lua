@@ -66,11 +66,11 @@ end
 
 utils.Accumulator = Accumulator
 
----Generic parsing of SSE via callback
+---Closure to parse SSE via callback
 ---@param opts table
 ---@return function chunk_callback
 function utils.create_sse_callback(opts)
-	local pattern, handler, accumulator = table.unpack(opts)
+	local pattern, handler = table.unpack(opts)
 
 	local buffer = ""
 
@@ -90,7 +90,7 @@ function utils.create_sse_callback(opts)
 			local json_str = line:match(pattern)
 			if json_str then
 				local ok, obj = pcall(cjson.decode, json_str)
-				if ok and obj then handler(obj, accumulator) end
+				if ok and obj then handler(obj) end
 			end
 		end
 	end

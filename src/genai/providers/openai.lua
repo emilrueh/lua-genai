@@ -62,7 +62,7 @@ end
 ---@param opts table
 ---@return table
 function openai.construct_payload(opts)
-	local do_stream = opts.settings.stream
+	local do_stream = opts.settings.stream and true or nil
 
 	local payload = {
 		model = opts.model,
@@ -89,48 +89,51 @@ function openai.extract_response_data(response)
 	return reply, input_tokens, output_tokens
 end
 
----Parse and process provider specific chunked responses structure for text and token usage
----@param obj table JSON from string chunk
-function openai.handle_stream_data(obj, accumulator)
-	-- errors:
-	if obj.type == "error" and obj.error then
-		local err_msg = string.format("%s: %s", obj.error.type, obj.error.message)
-		error(err_msg)
+---Closure processing and accumulating streamed response chunk objects
+---@param accumulator table Schema storing full streamed response
+---@param processor function Display of streamed text chunks
+---@return function handler
+function openai.create_stream_handler(accumulator, processor)
+	---Parse and process provider specific chunked responses structure for text and token usage
+	---@param obj table JSON from string chunk
+	return function(obj)
+		-- errors:
+		if obj.type == "error" and obj.error then
+			local err_msg = string.format("%s: %s", obj.error.type, obj.error.message)
+			error(err_msg)
 
-	-- text:
-	elseif
-		obj.object == "chat.completion.chunk"
-		and obj.choices
-		and #obj.choices > 0
-		and obj.choices[1].delta
-		and obj.choices[1].delta.content
-	then
-		local text = obj.choices[1].delta.content
-		-- print chunked response text onto the same line
-		io.write(text)
-		io.flush()
-		-- accumulate response text
-		accumulator.schema.choices[1].message.content = accumulator.schema.choices[1].message.content .. text
+		-- text:
+		elseif
+			obj.object == "chat.completion.chunk"
+			and obj.choices
+			and #obj.choices > 0
+			and obj.choices[1].delta
+			and obj.choices[1].delta.content
+		then
+			local text = obj.choices[1].delta.content
+			accumulator.schema.choices[1].message.content = accumulator.schema.choices[1].message.content .. text
+			processor(text)
 
-	-- input_tokens:
-	elseif
-		obj.object == "chat.completion.chunk"
-		and obj.usage
-		and type(obj.usage) == "table"
-		and obj.usage.prompt_tokens
-	then
-		local input_tokens = obj.usage.prompt_tokens
-		accumulator.schema.usage.prompt_tokens = accumulator.schema.usage.prompt_tokens + input_tokens
+		-- input_tokens:
+		elseif
+			obj.object == "chat.completion.chunk"
+			and obj.usage
+			and type(obj.usage) == "table"
+			and obj.usage.prompt_tokens
+		then
+			local input_tokens = obj.usage.prompt_tokens
+			accumulator.schema.usage.prompt_tokens = accumulator.schema.usage.prompt_tokens + input_tokens
 
-	-- output_tokens:
-	elseif
-		obj.object == "chat.completion.chunk"
-		and obj.usage
-		and type(obj.usage) == "table"
-		and obj.usage.completion_tokens
-	then
-		local output_tokens = obj.usage.completion_tokens
-		accumulator.schema.usage.completion_tokens = accumulator.schema.usage.completion_tokens + output_tokens
+		-- output_tokens:
+		elseif
+			obj.object == "chat.completion.chunk"
+			and obj.usage
+			and type(obj.usage) == "table"
+			and obj.usage.completion_tokens
+		then
+			local output_tokens = obj.usage.completion_tokens
+			accumulator.schema.usage.completion_tokens = accumulator.schema.usage.completion_tokens + output_tokens
+		end
 	end
 end
 
