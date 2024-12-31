@@ -1,4 +1,4 @@
-local utils = require("src.utils")
+local utils = require("genai.utils")
 
 ---@class Chat Accumulating chat history and usage
 ---@field client table

@@ -1,6 +1,6 @@
 -- "https://api.anthropic.com/v1/messages"
 
----@module "src.ai.anthropic"
+---@module "genai.providers.anthropic"
 local anthropic = {}
 
 ---Return nil as system prompt is provided in top-level payload

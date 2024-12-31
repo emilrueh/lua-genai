@@ -1,6 +1,6 @@
 -- "https://api.openai.com/v1/chat/completions"
 
----@module "src.ai.openai"
+---@module "genai.providers.openai"
 local openai = {}
 
 ---Package system prompt

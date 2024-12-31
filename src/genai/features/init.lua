@@ -1,6 +1,6 @@
----@module "src.genai.features"
+---@module "genai.features"
 local features = {}
 
-features.Chat = require("src.genai.features.chat")
+features.Chat = require("genai.features.chat")
 
 return features

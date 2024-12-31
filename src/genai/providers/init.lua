@@ -1,7 +1,7 @@
----@module "src.genai.providers"
+---@module "genai.providers"
 local providers = {}
 
-providers.openai = require("src.genai.providers.openai")
-providers.anthropic = require("src.genai.providers.anthropic")
+providers.openai = require("genai.providers.openai")
+providers.anthropic = require("genai.providers.anthropic")
 
 return providers
