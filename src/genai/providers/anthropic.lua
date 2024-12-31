@@ -1,6 +1,6 @@
 -- "https://api.anthropic.com/v1/messages"
 
----@module "src.ai.anthropic"
+---@module "genai.providers.anthropic"
 local anthropic = {}
 
 ---Return nil as system prompt is provided in top-level payload
@@ -68,7 +68,7 @@ function anthropic.construct_payload(opts)
 		-- basic settings:
 		max_tokens = opts.settings.max_tokens or 1024, -- required
 		temperature = opts.settings.temperature,
-		stream = opts.settings.stream,
+		stream = opts.settings.stream and true or nil,
 		-- advanced settings:
 		top_k = opts.settings.top_k,
 		top_p = opts.settings.top_p,
@@ -93,32 +93,35 @@ function anthropic.extract_response_data(response)
 	return reply, input_tokens, output_tokens
 end
 
----Parse and process provider specific chunked responses structure for text and token usage
----@param obj table JSON from string chunk
-function anthropic.handle_stream_data(obj, accumulator)
-	-- errors:
-	if obj.type == "error" and obj.error then
-		local err_msg = string.format("%s: %s", obj.error.type, obj.error.message)
-		error(err_msg)
+---Closure processing and accumulating streamed response chunk objects
+---@param accumulator table Schema storing full streamed response
+---@param processor function Display of streamed text chunks
+---@return function handler
+function anthropic.create_stream_handler(accumulator, processor)
+	---Parse and process provider specific chunked responses structure for text and token usage
+	---@param obj table JSON from string chunk
+	return function(obj)
+		-- errors:
+		if obj.type == "error" and obj.error then
+			local err_msg = string.format("%s: %s", obj.error.type, obj.error.message)
+			error(err_msg)
 
-	-- text:
-	elseif obj.type == "content_block_delta" and obj.delta then
-		local text = obj.delta.text or obj.delta.partial_json
-		-- print chunked response text onto the same line
-		io.write(text)
-		io.flush()
-		-- accumulate response text
-		accumulator.schema.content[1].text = accumulator.schema.content[1].text .. text
+		-- text:
+		elseif obj.type == "content_block_delta" and obj.delta then
+			local text = obj.delta.text or obj.delta.partial_json
+			accumulator.schema.content[1].text = accumulator.schema.content[1].text .. text
+			processor(text)
 
-	-- input_tokens:
-	elseif obj.type == "message_start" and obj.message and obj.message.usage and obj.message.usage.input_tokens then
-		local input_tokens = obj.message.usage.input_tokens
-		accumulator.schema.usage.input_tokens = accumulator.schema.usage.input_tokens + input_tokens
+		-- input_tokens:
+		elseif obj.type == "message_start" and obj.message and obj.message.usage and obj.message.usage.input_tokens then
+			local input_tokens = obj.message.usage.input_tokens
+			accumulator.schema.usage.input_tokens = accumulator.schema.usage.input_tokens + input_tokens
 
-	-- output_tokens:
-	elseif obj.type == "message_delta" and obj.usage and obj.usage.output_tokens then
-		local output_tokens = obj.usage.output_tokens
-		accumulator.schema.usage.output_tokens = accumulator.schema.usage.output_tokens + output_tokens
+		-- output_tokens:
+		elseif obj.type == "message_delta" and obj.usage and obj.usage.output_tokens then
+			local output_tokens = obj.usage.output_tokens
+			accumulator.schema.usage.output_tokens = accumulator.schema.usage.output_tokens + output_tokens
+		end
 	end
 end
 
