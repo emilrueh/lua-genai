@@ -2,15 +2,9 @@
 
 A developer-friendly Lua interface for working with various generative AI providers, abstracting away provider-specific payload structures and response parsing so that using multiple models is easy.
 
-## Providers
+## Features
 
 > ⚠️ This is a work in progress so any help is highly appreciated!
-
-- [OpenAI](https://platform.openai.com/docs/overview)
-
-- [Anthropic](https://docs.anthropic.com/en/home)
-
-## Features
 
 - Easily switch between AI chat model providers
 - Pass in prompts and get replies without the provider complexity
@@ -19,6 +13,12 @@ A developer-friendly Lua interface for working with various generative AI provid
 - Use the `genai` client directly for more granular control if needed
 - Abstraction for structured response JSON output
 - Token usage tracking with cost calculation
+
+### Providers
+
+- [OpenAI](https://platform.openai.com/docs/overview)
+
+- [Anthropic](https://docs.anthropic.com/en/home)
 
 ## Installation
 
