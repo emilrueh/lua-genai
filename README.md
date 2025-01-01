@@ -2,29 +2,45 @@
 
 A developer-friendly Lua interface for working with various generative AI providers, abstracting away provider-specific payload structures and response parsing so that using multiple models is easy.
 
-## Providers
+## Features
 
 > ⚠️ This is a work in progress so any help is highly appreciated!
+
+- Easily switch between AI chat model providers
+- Pass in prompts and get replies without the provider complexity
+- Easily integrate new models and adjust settings
+- Use the `chat` object for integrated message history
+- For more granular control use the `genai` client directly if needed
+- Stream output for real-time responses
+- Structured JSON response abstraction layer
+- Token usage tracking with cost calculation
+
+### Providers
 
 - [OpenAI](https://platform.openai.com/docs/overview)
 
 - [Anthropic](https://docs.anthropic.com/en/home)
 
-## Features
+### Roadmap
 
-- Easily switch between AI chat model providers
-- Pass in prompts and get replies without the provider complexity
-- Easily integrate new models and adjust settings
-- Use the `chat` object for integrated message handling
-- Use the `genai` client directly for more granular control if needed
-- Abstraction for structured response JSON output
-- Token usage tracking with cost calculation
+1. Advanced error handling
+2. Google Gemini integration
+3. Audio models
+4. Image models
+5. Open-Source model integration
+6. Video models
 
 ## Installation
 
 ```
 luarocks install lua-genai
 ```
+
+### Dependencies
+
+- [lua-cjson](https://github.com/openresty/lua-cjson)
+
+- [luasec](https://github.com/brunoos/luasec)
 
 ## Usage
 
@@ -77,18 +93,3 @@ print(chat:say("Create a powerful wizard called Torben."))
 ```
 
 See `example.lua` for a full-featured Anthropic implementation.
-
-## Dependencies
-
-- [lua-cjson](https://github.com/openresty/lua-cjson)
-
-- [luasec](https://github.com/brunoos/luasec)
-
-## Roadmap
-
-1. Advanced error handling
-2. Google Gemini integration
-3. Audio models
-4. Image models
-5. Open-Source model integration
-6. Video models
