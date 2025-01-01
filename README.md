@@ -21,11 +21,26 @@ A developer-friendly Lua interface for working with various generative AI provid
 
 - [Anthropic](https://docs.anthropic.com/en/home)
 
+### Roadmap
+
+1. Advanced error handling
+2. Google Gemini integration
+3. Audio models
+4. Image models
+5. Open-Source model integration
+6. Video models
+
 ## Installation
 
 ```
 luarocks install lua-genai
 ```
+
+### Dependencies
+
+- [lua-cjson](https://github.com/openresty/lua-cjson)
+
+- [luasec](https://github.com/brunoos/luasec)
 
 ## Usage
 
@@ -78,18 +93,3 @@ print(chat:say("Create a powerful wizard called Torben."))
 ```
 
 See `example.lua` for a full-featured Anthropic implementation.
-
-## Dependencies
-
-- [lua-cjson](https://github.com/openresty/lua-cjson)
-
-- [luasec](https://github.com/brunoos/luasec)
-
-## Roadmap
-
-1. Advanced error handling
-2. Google Gemini integration
-3. Audio models
-4. Image models
-5. Open-Source model integration
-6. Video models
