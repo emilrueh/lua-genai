@@ -14,6 +14,7 @@ A developer-friendly Lua interface for working with various generative AI provid
 - Stream output for real-time responses
 - Structured JSON response abstraction layer
 - Token usage tracking with cost calculation
+- Open-source models via OpenAI compatibility
 
 ### Providers
 
