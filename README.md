@@ -17,18 +17,19 @@ A developer-friendly Lua interface for working with various generative AI provid
 
 ### Providers
 
-- [OpenAI](https://platform.openai.com/docs/overview)
+- OpenAI: https://platform.openai.com/docs/overview
 
-- [Anthropic](https://docs.anthropic.com/en/home)
+- Anthropic: https://docs.anthropic.com/en/home
+
+- Anything OpenAI compatible e.g. **Perplexity, Together AI, etc.** by prefixing endpoint with openai and double colon: `"openai::https://api.perplexity.ai/chat/completions"`
 
 ### Roadmap
 
-1. Advanced error handling
-2. Google Gemini integration
-3. Audio models
-4. Image models
-5. Open-Source model integration
-6. Video models
+- [ ] Audio models
+
+- [ ] Image models
+
+- [ ] Video models
 
 ## Installation
 
