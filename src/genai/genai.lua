@@ -41,7 +41,6 @@ end
 ---@return string endpoint
 function GenAI:check_if_openai_compatible(endpoint)
 	local prefix, url = endpoint:match("^(.-)::(.+)$")
-	print(url)
 	return (prefix == "openai") and url or endpoint
 end
 
