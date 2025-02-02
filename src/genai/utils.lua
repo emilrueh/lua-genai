@@ -25,7 +25,7 @@ function utils.send_request(url, payload, method, headers, callback, exception_h
 		return chunk
 	end
 
-	-- if payload then headers["Content-Length"] = #payload end
+	if payload then headers["Content-Length"] = #payload end
 
 	local request_opts = {
 		url = url,
