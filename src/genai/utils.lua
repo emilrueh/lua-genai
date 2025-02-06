@@ -11,8 +11,8 @@ local utils = {}
 ---@return number response
 ---@return number status
 ---@return table headers
-local function _exec_request(opts)
-	if copas.running then return copas.http.request(opts) end
+local function _exec_request(opts, async)
+	if async then return copas.http.request(opts) end
 	return ssl_https.request(opts)
 end
 
@@ -24,7 +24,7 @@ end
 ---@param callback function?
 ---@param exception_handler function?
 ---@return string|table body
-function utils.send_request(url, payload, method, headers, callback, exception_handler)
+function utils.send_request(url, payload, method, headers, callback, exception_handler, async)
 	local response_body = {}
 	local final_sink = ltn12.sink.table(response_body)
 
@@ -46,7 +46,7 @@ function utils.send_request(url, payload, method, headers, callback, exception_h
 		source = payload and ltn12.source.string(payload) or nil,
 	}
 
-	local _, status_code, response_headers = _exec_request(request_opts)
+	local _, status_code, response_headers = _exec_request(request_opts, async)
 	local body = table.concat(response_body)
 
 	-- decode body if json response

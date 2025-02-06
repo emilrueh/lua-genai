@@ -67,11 +67,13 @@ end
 ---@return table payload
 ---@return function? callback Streaming handler
 ---@return table? accumulator Schema storing full streamed response
+---@return boolean async Whether to use non-blocking https via copas
 function GenAI:_prepare_response_requirements(opts)
 	local headers = self.provider.construct_headers(self._api_key)
 	local payload = self.provider.construct_payload(opts)
 	local accumulator, callback = self:_setup_stream(opts.settings.stream)
-	return headers, payload, callback, accumulator
+	local async = opts.settings and opts.settings.async or false
+	return headers, payload, callback, accumulator, async
 end
 
 ---Execute API call to specified GenAI model with all payload and settings
@@ -80,7 +82,7 @@ end
 ---@return number input_tokens
 ---@return number output_tokens
 function GenAI:call(opts)
-	local headers, payload, callback, accumulator = self:_prepare_response_requirements(opts)
+	local headers, payload, callback, accumulator, async = self:_prepare_response_requirements(opts)
 
 	local response = utils.send_request(
 		self._endpoint,
@@ -88,7 +90,8 @@ function GenAI:call(opts)
 		"POST",
 		headers,
 		callback,
-		self.provider.handle_exceptions
+		self.provider.handle_exceptions,
+		async
 	)
 
 	local reply, input_tokens, output_tokens =
