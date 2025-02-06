@@ -15,6 +15,7 @@ A developer-friendly Lua interface for working with various generative AI provid
 - Structured JSON response abstraction layer
 - Token usage tracking with cost calculation
 - Open-source models via OpenAI compatibility
+- Async non-blocking requests via copas
 
 ### Providers
 
@@ -43,6 +44,8 @@ luarocks install lua-genai
 - [lua-cjson](https://github.com/openresty/lua-cjson)
 
 - [luasec](https://github.com/brunoos/luasec)
+
+- [copas](https://github.com/lunarmodules/copas)
 
 ## Usage
 
@@ -73,6 +76,20 @@ end
 local chat = client:chat("gpt-4o-mini", { settings = { stream = process_stream } })
 chat:say("Tell me a very short story.")
 print()
+```
+
+### Async
+
+```lua
+local copas = require("copas")
+
+local chat = client:chat("gpt-4o-mini", { settings = { async = true } })
+
+copas.addthread(function()
+	print(chat:say("test"))
+end)
+
+copas.loop()
 ```
 
 ### JSON Response

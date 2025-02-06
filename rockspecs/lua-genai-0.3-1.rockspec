@@ -12,7 +12,8 @@ description = {
 dependencies = {
    "lua >= 5.1",
    "lua-cjson",
-   "luasec"
+   "luasec",
+   "copas",
 }
 build = {
    type = "builtin",
