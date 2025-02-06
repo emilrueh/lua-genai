@@ -1,11 +1,22 @@
 local cjson = require("cjson")
-local https = require("ssl.https")
+local copas = require("copas")
+local ssl_https = require("ssl.https")
 local ltn12 = require("ltn12")
 
 ---@module "genai.utils"
 local utils = {}
 
----Https request with partial response functionality via callback
+---Decides to either call https request via non-blocking copas or blocking ssl
+---@param opts table
+---@return number response
+---@return number status
+---@return table headers
+local function _exec_request(opts, async)
+	if async then return copas.http.request(opts) end
+	return ssl_https.request(opts)
+end
+
+---Https request with partial response functionality via callback as well as non-blocking via copas
 ---@param url string
 ---@param payload table?
 ---@param method string?
@@ -13,7 +24,7 @@ local utils = {}
 ---@param callback function?
 ---@param exception_handler function?
 ---@return string|table body
-function utils.send_request(url, payload, method, headers, callback, exception_handler)
+function utils.send_request(url, payload, method, headers, callback, exception_handler, async)
 	local response_body = {}
 	local final_sink = ltn12.sink.table(response_body)
 
@@ -35,7 +46,7 @@ function utils.send_request(url, payload, method, headers, callback, exception_h
 		source = payload and ltn12.source.string(payload) or nil,
 	}
 
-	local _, status_code, response_headers = https.request(request_opts)
+	local _, status_code, response_headers = _exec_request(request_opts, async)
 	local body = table.concat(response_body)
 
 	-- decode body if json response
