@@ -2,9 +2,9 @@
 
 A developer-friendly Lua interface for working with various generative AI providers, abstracting away provider-specific payload structures and response parsing so that using multiple models is easy.
 
-## Features
+> ❤️ This is a work in progress so any help is highly appreciated!
 
-> ⚠️ This is a work in progress so any help is highly appreciated!
+## Features
 
 - Use the `chat` object for integrated message history
 - For more granular control use the `genai` client directly if needed
