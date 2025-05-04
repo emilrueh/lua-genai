@@ -6,9 +6,6 @@ A developer-friendly Lua interface for working with various generative AI provid
 
 > ⚠️ This is a work in progress so any help is highly appreciated!
 
-- Easily switch between AI chat model providers
-- Pass in prompts and get replies without the provider complexity
-- Easily integrate new models and adjust settings
 - Use the `chat` object for integrated message history
 - For more granular control use the `genai` client directly if needed
 - Stream output for real-time responses
