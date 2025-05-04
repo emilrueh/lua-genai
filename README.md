@@ -23,7 +23,7 @@ A developer-friendly Lua interface for working with various generative AI provid
 
 - Anthropic: https://docs.anthropic.com/en/home
 
-- Anything OpenAI compatible e.g. **Perplexity, Together AI, etc.** by prefixing endpoint with openai and double colon: `"openai::https://api.perplexity.ai/chat/completions"`
+- Anything OpenAI compatible e.g. **Perplexity, Together AI, etc.** by prefixing endpoint with openai and double colon e.g. `"openai::https://api.perplexity.ai/chat/completions"`
 
 ### Roadmap
 
