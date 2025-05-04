@@ -6,8 +6,6 @@ A developer-friendly Lua interface for working with various generative AI provid
 
 ## Features
 
-- Use the `chat` object for integrated message history
-- For more granular control use the `genai` client directly if needed
 - Stream output for real-time responses
 - Structured JSON response abstraction layer
 - Token usage tracking with cost calculation
@@ -32,16 +30,12 @@ A developer-friendly Lua interface for working with various generative AI provid
 
 ## Installation
 
-```
-luarocks install lua-genai
-```
+`luarocks install lua-genai`
 
 ### Dependencies
 
 - [lua-cjson](https://github.com/openresty/lua-cjson)
-
 - [luasec](https://github.com/brunoos/luasec)
-
 - [copas](https://github.com/lunarmodules/copas)
 
 ## Usage
@@ -54,6 +48,8 @@ local client = genai.new("<YOUR_API_KEY>", "https://api.openai.com/v1/chat/compl
 local chat = client:chat("gpt-4o-mini")
 print(chat:say("Hello, world!"))
 ```
+
+> For deeper control you could use the `genai` client directly if needed
 
 ### System Prompt
 
