@@ -47,10 +47,11 @@ function utils.send_request(url, payload, method, headers, callback, exception_h
 	}
 
 	local _, status_code, response_headers = _exec_request(request_opts, async)
+	status_code = tonumber(status_code)
 	local body = table.concat(response_body)
 
 	-- decode body if json response
-	if response_headers["content-type"]:find("application/json") then body = cjson.decode(body) end
+	if response_headers and response_headers["content-type"]:find("application/json") then body = cjson.decode(body) end
 
 	-- handle status codes
 	if exception_handler then
